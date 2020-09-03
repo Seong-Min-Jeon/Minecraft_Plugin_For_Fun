@@ -10,6 +10,9 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Blaze;
@@ -17,6 +20,7 @@ import org.bukkit.entity.ElderGuardian;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Giant;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Item;
@@ -30,6 +34,8 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -61,6 +67,8 @@ public class Main extends JavaPlugin implements Listener{
 	Random rnd = new Random();
 	World sao = Bukkit.getWorld("sao");
 	World world = Bukkit.getWorld("world");
+	
+	BossBar bar = Bukkit.createBossBar(ChatColor.DARK_RED + "The Eye", BarColor.RED, BarStyle.SOLID);
 	
 	@Override
 	public void onEnable() {
@@ -320,6 +328,17 @@ public class Main extends JavaPlugin implements Listener{
 					&& loc.getX() >= -126 && loc.getY() >= 153 && loc.getZ() >= 7) { 
 				event.setCancelled(true);
 				return;
+			}
+
+			// º¸½º¹æ -98 194 -31  -62 214 21
+			if (loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				if(event.getEntity() instanceof Giant) {
+					
+				} else {
+					event.setCancelled(true);
+					return;
+				}
 			}
 			
 			// 1Ãþ -142 63 -31  -63 72 19
@@ -693,7 +712,16 @@ public class Main extends JavaPlugin implements Listener{
 						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 0));
 						player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 200, 1));
 					}
-				}
+				} 
+			}
+		} catch(Exception e) {
+			
+		}
+
+		try {
+			if(event.getEntity() instanceof Giant) {
+				event.setCancelled(true);
+				((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
 			}
 		} catch(Exception e) {
 			
@@ -718,6 +746,11 @@ public class Main extends JavaPlugin implements Listener{
 					return;
 				}
 			}
+			
+			if(event.getEntity() instanceof Giant) {
+				bar.setProgress(((LivingEntity) event.getEntity()).getHealth() / 30000.0);
+			}
+			
 		}
 	}
 	
@@ -848,13 +881,74 @@ public class Main extends JavaPlugin implements Listener{
 			weapon.setItemMeta(im);
 			itemArg.remove();
 		}
+		
+		if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "¿¤µå¸¯ ÀÌµ¿¼­")) {
+			itemArg.remove();
+			
+			player.teleport(new Location(Bukkit.getWorld("sao"), -79, 202, -26));
+			List<Entity> list = player.getNearbyEntities(100, 100, 100);
+			int tmp = 0;
+			for(Entity ent : list) {
+				if(ent instanceof Player) {
+					Player nearP = (Player) ent;
+					Location loc = nearP.getLocation();
+					// -98 194 -31  -62 214 21
+					if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+							&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+						tmp++;
+					}
+				}
+			}
+			if(tmp == 0) {
+				Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 202, 7), EntityType.GIANT);
+				g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
+				g.setAI(false);
+				g.setMaxHealth(30000);
+				g.setHealth(30000);
+				
+				bar.setProgress(g.getHealth() / 30000.0);
+				for(Player p : Bukkit.getOnlinePlayers()) {
+					if(p.getWorld() == sao) {
+						bar.addPlayer(p);
+					}
+				}
+				
+			}
+			
+		}
 	}
 
 	@EventHandler
 	public void regenHealth(EntityRegainHealthEvent event) {
-		if(event.getRegainReason() == RegainReason.SATIATED) {
-			event.setCancelled(true);
+		if(event.getEntity().getWorld().getName().equalsIgnoreCase("sao")) {
+			if(event.getRegainReason() == RegainReason.SATIATED) {
+				event.setCancelled(true);
+			}
+		}
+	
+	}
+	
+	@EventHandler
+	public void blockBreakEvent(BlockBreakEvent event) {
+		if(event.getBlock().getWorld() == sao) {
+			Location loc = event.getBlock().getLocation();
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 	
+	@EventHandler
+	public void blockBurnEvent(BlockBurnEvent event) {
+		if(event.getBlock().getWorld() == sao) {
+			Location loc = event.getBlock().getLocation();
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
 }
