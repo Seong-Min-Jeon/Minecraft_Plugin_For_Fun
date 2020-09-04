@@ -16,10 +16,12 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Blaze;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.ElderGuardian;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Giant;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.IronGolem;
@@ -36,17 +38,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -103,6 +110,21 @@ public class Main extends JavaPlugin implements Listener{
 		Player player = event.getPlayer();
 		if(player.getWorld().getName().equalsIgnoreCase("sao")) {
 			event.setRespawnLocation(new Location(Bukkit.getWorld("sao"), -151, 66, -25));
+		}
+	}
+	
+	@EventHandler
+	public void playerDeath(PlayerDeathEvent event) {
+		Player player = event.getEntity();
+		Location loc = player.getLocation();
+		if(player.getWorld() == sao) {
+			// -98 194 -31  -62 214 21
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				event.setKeepInventory(true);
+				event.setNewExp(0);
+				event.setNewLevel(player.getLevel() / 2);
+			}
 		}
 	}
 	
@@ -722,6 +744,81 @@ public class Main extends JavaPlugin implements Listener{
 			if(event.getEntity() instanceof Giant) {
 				event.setCancelled(true);
 				((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
+				
+				int num = rnd.nextInt(20);
+				if(num == 0) {
+					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+						Location loc = allPlayer.getLocation();
+						if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+								&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+							allPlayer.damage(19);
+							allPlayer.sendMessage(ChatColor.RED + "죽어라 인간.");
+							// ===============================================================
+							ParticleData pd = new ParticleData(allPlayer.getUniqueId());
+							if (pd.hasID()) {
+								pd.endTask();
+								pd.removeID();
+							}
+							ParticleEffect pe = new ParticleEffect(allPlayer);
+							pe.startE2();
+							// ================================================================
+						}
+					}
+				} else if(num < 3) {
+					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+						Location loc = allPlayer.getLocation();
+						if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+								&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+							allPlayer.setFireTicks(200);
+							allPlayer.sendMessage(ChatColor.RED + "구워져라.");
+							// ===============================================================
+							ParticleData pd = new ParticleData(allPlayer.getUniqueId());
+							if (pd.hasID()) {
+								pd.endTask();
+								pd.removeID();
+							}
+							ParticleEffect pe = new ParticleEffect(allPlayer);
+							pe.startE21();
+							// ================================================================
+						}
+					}
+				} else if(num == 3) {
+					if(event.getDamager() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						player.damage(10);
+						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0));
+						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 0));
+						player.sendMessage(ChatColor.RED + "고통받아라.");
+						// ===============================================================
+						ParticleData pd = new ParticleData(player.getUniqueId());
+						if (pd.hasID()) {
+							pd.endTask();
+							pd.removeID();
+						}
+						ParticleEffect pe = new ParticleEffect(player);
+						pe.startE17();
+						// ================================================================
+					} else if(event.getDamager() instanceof Arrow) {
+						Arrow arrow = (Arrow) event.getDamager();
+						Player player = (Player) arrow.getShooter();
+						player.damage(10);
+						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0));
+						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 0));
+						player.sendMessage(ChatColor.RED + "고통받아라.");
+						// ===============================================================
+						ParticleData pd = new ParticleData(player.getUniqueId());
+						if (pd.hasID()) {
+							pd.endTask();
+							pd.removeID();
+						}
+						ParticleEffect pe = new ParticleEffect(player);
+						pe.startE17();
+						// ================================================================
+					}
+				}
+				
+				
+				
 			}
 		} catch(Exception e) {
 			
@@ -951,4 +1048,60 @@ public class Main extends JavaPlugin implements Listener{
 			}
 		}
 	}
+
+	@EventHandler
+	public void blockIgniteEvent(BlockIgniteEvent event) {
+		if(event.getBlock().getWorld() == sao) {
+			Location loc = event.getBlock().getLocation();
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void blockPlaceEvent(BlockPlaceEvent event) {
+		if(event.getBlock().getWorld() == sao) {
+			Location loc = event.getBlock().getLocation();
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void ExplosionCancel(EntityExplodeEvent event) {
+		Entity entity = event.getEntity();
+		if(entity.getWorld() == sao) {
+			if(entity instanceof Creeper || entity instanceof Fireball) {
+				event.setCancelled(true);
+			}
+			if(event.getEntityType() == EntityType.PRIMED_TNT) {
+				event.setCancelled(true);
+			}
+		}
+		
+	}
+
+	@EventHandler
+	public void playerOff(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		Location loc = player.getLocation();
+		System.out.println(0);
+		if(player.getWorld() == sao) {
+			System.out.println(1);
+			// -98 194 -31  -62 214 21
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				System.out.println(2);
+				player.setHealth(0);
+				return;
+			}
+		}
+	}
+	
 }
