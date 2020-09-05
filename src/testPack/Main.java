@@ -997,6 +997,14 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			if(tmp == 0) {
+				
+				for(Entity ent : list) {
+					if(ent instanceof Giant) {
+						ent.remove();
+						bar.removeAll();
+					}
+				}
+				
 				Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 202, 7), EntityType.GIANT);
 				g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
 				g.setAI(false);
@@ -1091,13 +1099,10 @@ public class Main extends JavaPlugin implements Listener{
 	public void playerOff(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		Location loc = player.getLocation();
-		System.out.println(0);
 		if(player.getWorld() == sao) {
-			System.out.println(1);
 			// -98 194 -31  -62 214 21
 			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
 					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
-				System.out.println(2);
 				player.setHealth(0);
 				return;
 			}
