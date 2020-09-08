@@ -7,6 +7,5 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/MASTER/Documents/1.16_server/spigot-1.16.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/MASTER/Downloads/jetbrains-annotations.jar/jetbrains-annotations.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

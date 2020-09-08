@@ -35,6 +35,22 @@ public class RefreshServer {
 			@Override
 			public void run() {
 				
+				if(time % 300 == 0) {
+					// 보스전 데미지
+					for(Player allPlayer : Bukkit.getOnlinePlayers()) {
+						Location loc = allPlayer.getLocation();
+						if(loc.getWorld() == Bukkit.getWorld("sao")) {
+							if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+									&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+								allPlayer.damage(5);
+								allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 0));
+								allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 100, 0));
+								allPlayer.sendMessage(ChatColor.RED + "저주에 걸렸습니다.");
+							}
+						}
+					}
+				}
+				
 				if(time % 600 == 0) {
 					world = Bukkit.getWorld("sao");
 					List<Entity> list1 = world.getEntities();
@@ -137,20 +153,7 @@ public class RefreshServer {
 							}
 						}
 					}
-					
-					// 보스전 데미지
-					for(Player allPlayer : Bukkit.getOnlinePlayers()) {
-						Location loc = allPlayer.getLocation();
-						if(loc.getWorld() == Bukkit.getWorld("sao")) {
-							if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
-									&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
-								allPlayer.damage(5);
-								allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 0));
-								allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 100, 0));
-								allPlayer.sendMessage(ChatColor.RED + "저주에 걸렸습니다.");
-							}
-						}
-					}
+				}
 				
 				if(time >= 6000) {
 					time = 0;
@@ -158,7 +161,6 @@ public class RefreshServer {
 			
 				time++;
 				
-				}
 			}						
 			
 		}, 0, 1);

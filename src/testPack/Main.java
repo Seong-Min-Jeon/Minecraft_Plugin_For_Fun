@@ -49,6 +49,9 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -980,44 +983,51 @@ public class Main extends JavaPlugin implements Listener{
 		}
 		
 		if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "엘드릭 이동서")) {
-			itemArg.remove();
 			
-			player.teleport(new Location(Bukkit.getWorld("sao"), -79, 202, -26));
-			List<Entity> list = player.getNearbyEntities(100, 100, 100);
-			int tmp = 0;
-			for(Entity ent : list) {
-				if(ent instanceof Player) {
-					Player nearP = (Player) ent;
-					Location loc = nearP.getLocation();
-					// -98 194 -31  -62 214 21
-					if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
-							&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
-						tmp++;
+			if(player.getWorld() == sao) {
+				// -155 199 -31  -159 208 -26
+				if (player.getLocation().getX() <= -155 && player.getLocation().getY() <= 208
+						&& player.getLocation().getZ() <= -26 && player.getLocation().getX() >= -159
+						&& player.getLocation().getY() >= 199 && player.getLocation().getZ() >= -31) {
+					itemArg.remove();
+					player.teleport(new Location(Bukkit.getWorld("sao"), -79, 202, -26));
+					List<Entity> list = player.getNearbyEntities(100, 100, 100);
+					int tmp = 0;
+					for(Entity ent : list) {
+						if(ent instanceof Player) {
+							Player nearP = (Player) ent;
+							Location loc = nearP.getLocation();
+							// -98 194 -31  -62 214 21
+							if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+									&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+								tmp++;
+							}
+						}
+					}
+					if(tmp == 0) {
+						
+						for(Entity ent : list) {
+							if(ent instanceof Giant) {
+								ent.remove();
+								bar.removeAll();
+							}
+						}
+						
+						Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 202, 7), EntityType.GIANT);
+						g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
+						g.setAI(false);
+						g.setMaxHealth(30000);
+						g.setHealth(30000);
+						
+						bar.setProgress(g.getHealth() / 30000.0);
+						for(Player p : Bukkit.getOnlinePlayers()) {
+							if(p.getWorld() == sao) {
+								bar.addPlayer(p);
+							}
+						}
+						
 					}
 				}
-			}
-			if(tmp == 0) {
-				
-				for(Entity ent : list) {
-					if(ent instanceof Giant) {
-						ent.remove();
-						bar.removeAll();
-					}
-				}
-				
-				Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 202, 7), EntityType.GIANT);
-				g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
-				g.setAI(false);
-				g.setMaxHealth(30000);
-				g.setHealth(30000);
-				
-				bar.setProgress(g.getHealth() / 30000.0);
-				for(Player p : Bukkit.getOnlinePlayers()) {
-					if(p.getWorld() == sao) {
-						bar.addPlayer(p);
-					}
-				}
-				
 			}
 			
 		}
@@ -1057,6 +1067,34 @@ public class Main extends JavaPlugin implements Listener{
 		}
 	}
 
+	@EventHandler
+	public void bucketEvent(PlayerBucketFillEvent event) {
+		Player player = event.getPlayer();
+		Location loc = player.getLocation();
+		if(player.getWorld() == sao) {
+			// -98 194 -31  -62 214 21
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void bucketEvent(PlayerBucketEmptyEvent event) {
+		Player player = event.getPlayer();
+		Location loc = player.getLocation();
+		if(player.getWorld() == sao) {
+			// -98 194 -31  -62 214 21
+			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+	
 	@EventHandler
 	public void blockIgniteEvent(BlockIgniteEvent event) {
 		if(event.getBlock().getWorld() == sao) {
