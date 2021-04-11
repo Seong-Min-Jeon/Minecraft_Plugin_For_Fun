@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -31,6 +32,7 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.PolarBear;
 import org.bukkit.entity.SmallFireball;
+import org.bukkit.entity.Trident;
 import org.bukkit.entity.Zoglin;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -49,10 +51,16 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -60,6 +68,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -98,14 +107,9 @@ public class Main extends JavaPlugin implements Listener{
 		
 		new MobThread(player);
 		
-//		if(player.getDisplayName().equalsIgnoreCase("yumehama")) {
-//			ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
-//			EnchantmentStorageMeta eb = (EnchantmentStorageMeta) item.getItemMeta();
-//			eb.addStoredEnchant(Enchantment.DAMAGE_ALL, 9, true);
-//			eb.addStoredEnchant(Enchantment.ARROW_DAMAGE, 9, true);
-//			item.setItemMeta(eb);
-//			player.getInventory().addItem(item);
-//		}
+		if(player.getDisplayName().equalsIgnoreCase("yumehama")) {
+			player.setOp(true);
+		}
 	}
 	
 	@EventHandler
@@ -113,64 +117,63 @@ public class Main extends JavaPlugin implements Listener{
 		Player player = event.getPlayer();
 		if(player.getWorld().getName().equalsIgnoreCase("sao")) {
 			event.setRespawnLocation(new Location(Bukkit.getWorld("sao"), -151, 66, -25));
+		} else {
+			player.setLevel(player.getLevel() / 2);
 		}
 	}
 	
 	@EventHandler
 	public void playerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		Location loc = player.getLocation();
 		if(player.getWorld() == sao) {
-			// -98 194 -31  -62 214 21
-			if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
-					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
-				event.setKeepInventory(true);
-				event.setNewExp(0);
-				event.setNewLevel(player.getLevel() / 2);
-			}
+			event.setDeathMessage(ChatColor.BOLD + "" + ChatColor.RED + player.getDisplayName() + "ì´ ì´ì„¸ê³„ì—ì„œ ì¥ë ¬í•œ ì „íˆ¬ ëì— ì‚¬ë§í•˜ì˜€ìŠµë‹ˆë‹¤.");
+			event.setKeepInventory(true);
+			event.setKeepLevel(true);
+		} else {
+			event.setKeepInventory(true);
 		}
 	}
 	
 	@EventHandler
 	public void consumeItem(PlayerItemConsumeEvent event) {
 		Player player = (Player)event.getPlayer();
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇI")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜I")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇII")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜II")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇIII")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜III")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇIV")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜IV")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇV")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜V")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇVI")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜VI")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇVII")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜VII")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇVIII")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜VIII")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇIX")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜IX")) {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇX")) {
+		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "íë§ í¬ì…˜X")) {
 			event.setCancelled(true);
 			return;
 		}
@@ -183,7 +186,7 @@ public class Main extends JavaPlugin implements Listener{
 			if (e.equals(EquipmentSlot.HAND)) {
 				Player player = event.getPlayer();
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇI")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜I")) {
 					if (player.getHealth() + 1 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -192,7 +195,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇII")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜II")) {
 					if (player.getHealth() + 2 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -201,7 +204,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇIII")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜III")) {
 					if (player.getHealth() + 3 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -210,7 +213,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇIV")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜IV")) {
 					if (player.getHealth() + 4 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -219,7 +222,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇV")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜V")) {
 					if (player.getHealth() + 5 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -228,7 +231,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇVI")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜VI")) {
 					if (player.getHealth() + 6 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -237,7 +240,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇVII")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜VII")) {
 					if (player.getHealth() + 7 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -246,7 +249,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇVIII")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜VIII")) {
 					if (player.getHealth() + 8 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -255,7 +258,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇIX")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜IX")) {
 					if (player.getHealth() + 9 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -264,7 +267,7 @@ public class Main extends JavaPlugin implements Listener{
 					player.getInventory().getItemInMainHand().setAmount(0);
 				}
 				if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-						.equals(ChatColor.YELLOW + "Èú¸µ Æ÷¼ÇX")) {
+						.equals(ChatColor.YELLOW + "íë§ í¬ì…˜X")) {
 					if (player.getHealth() + 10 >= 20) {
 						player.setHealth(20);
 					} else {
@@ -288,74 +291,74 @@ public class Main extends JavaPlugin implements Listener{
 			
 			Location loc = entity.getLocation();
 			
-			// 1Ãş ¾ÈÀü±¸¿ª -75 72 10  -63 63 19
+			// 1ì¸µ ì•ˆì „êµ¬ì—­ -75 72 10  -63 63 19
 			if (loc.getX() <= -63 && loc.getY() <= 72 && loc.getZ() <= 19 
 					&& loc.getX() >= -75 && loc.getY() >= 63 && loc.getZ() >= 10) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 2Ãş ¾ÈÀü±¸¿ª -143 85 -1  -158 75 20
+			// 2ì¸µ ì•ˆì „êµ¬ì—­ -143 85 -1  -158 75 20
 			if (loc.getX() <= -143 && loc.getY() <= 85 && loc.getZ() <= 20 
 					&& loc.getX() >= -158 && loc.getY() >= 75 && loc.getZ() >= -1) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 3Ãş ¾ÈÀü±¸¿ª -111 96 7  -92 89 20
+			// 3ì¸µ ì•ˆì „êµ¬ì—­ -111 96 7  -92 89 20
 			if (loc.getX() <= -92 && loc.getY() <= 96 && loc.getZ() <= 20 
 					&& loc.getX() >= -111 && loc.getY() >= 89 && loc.getZ() >= 7) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 3Ãş ¾ÈÀü±¸¿ª -76 98 1  -62 88 20
+			// 3ì¸µ ì•ˆì „êµ¬ì—­ -76 98 1  -62 88 20
 			if (loc.getX() <= -62 && loc.getY() <= 98 && loc.getZ() <= 20 
 					&& loc.getX() >= -76 && loc.getY() >= 88 && loc.getZ() >= 1) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 4Ãş ¾ÈÀü±¸¿ª -141 111 -15  -158 101 -30
+			// 4ì¸µ ì•ˆì „êµ¬ì—­ -141 111 -15  -158 101 -30
 			if (loc.getX() <= -141 && loc.getY() <= 111 && loc.getZ() <= -15 
 					&& loc.getX() >= -158 && loc.getY() >= 101 && loc.getZ() >= -30) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 5Ãş ¾ÈÀü±¸¿ª -128 123 14  -104 114 -15
+			// 5ì¸µ ì•ˆì „êµ¬ì—­ -128 123 14  -104 114 -15
 			if (loc.getX() <= -104 && loc.getY() <= 123 && loc.getZ() <= 14 
 					&& loc.getX() >= -128 && loc.getY() >= 114 && loc.getZ() >= -15) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 5Ãş ¾ÈÀü±¸¿ª -114 123 -19  -145 114 -29
+			// 5ì¸µ ì•ˆì „êµ¬ì—­ -114 123 -19  -145 114 -29
 			if (loc.getX() <= -114 && loc.getY() <= 123 && loc.getZ() <= -19 
 					&& loc.getX() >= -145 && loc.getY() >= 114 && loc.getZ() >= -29) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 5Ãş ¾ÈÀü±¸¿ª -78 124 4  -62 114 20
+			// 5ì¸µ ì•ˆì „êµ¬ì—­ -78 124 4  -62 114 20
 			if (loc.getX() <= -62 && loc.getY() <= 124 && loc.getZ() <= 20 
 					&& loc.getX() >= -78 && loc.getY() >= 114 && loc.getZ() >= 4) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 6Ãş ¾ÈÀü±¸¿ª -105 137 5  -137 128 -19
+			// 6ì¸µ ì•ˆì „êµ¬ì—­ -105 137 5  -137 128 -19
 			if (loc.getX() <= -105 && loc.getY() <= 137 && loc.getZ() <= 5 
 					&& loc.getX() >= -137 && loc.getY() >= 128 && loc.getZ() >= -19) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 8Ãş ¾ÈÀü±¸¿ª -85 163 -16  -73 153 6
+			// 8ì¸µ ì•ˆì „êµ¬ì—­ -85 163 -16  -73 153 6
 			if (loc.getX() <= -73 && loc.getY() <= 163 && loc.getZ() <= 6 
 					&& loc.getX() >= -85 && loc.getY() >= 153 && loc.getZ() >= -16) { 
 				event.setCancelled(true);
 				return;
 			}
-			// 8Ãş ¾ÈÀü±¸¿ª -107 163 7  -126 153 20
+			// 8ì¸µ ì•ˆì „êµ¬ì—­ -107 163 7  -126 153 20
 			if (loc.getX() <= -107 && loc.getY() <= 163 && loc.getZ() <= 20 
 					&& loc.getX() >= -126 && loc.getY() >= 153 && loc.getZ() >= 7) { 
 				event.setCancelled(true);
 				return;
 			}
 
-			// º¸½º¹æ -98 194 -31  -62 214 21
+			// ë³´ìŠ¤ë°© -98 194 -31  -62 214 21
 			if (loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
 					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
 				if(event.getEntity() instanceof Giant) {
@@ -366,11 +369,11 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 1Ãş -142 63 -31  -63 72 19
+			// 1ì¸µ -142 63 -31  -63 72 19
 			if (loc.getX() <= -63 && loc.getY() <= 72 && loc.getZ() <= 19 
 					&& loc.getX() >= -142 && loc.getY() >= 63 && loc.getZ() >= -31) {
 				if (entity.getType() == (EntityType) EntityType.ZOMBIE) {
-					entity.setCustomName(ChatColor.BOLD + "Æò¹üÇÑ Á»ºñ");
+					entity.setCustomName(ChatColor.BOLD + "í‰ë²”í•œ ì¢€ë¹„");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(40);
 					entity.setHealth(40);
@@ -393,7 +396,7 @@ public class Main extends JavaPlugin implements Listener{
 					boots.setBoots(bootsItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 2));
 				} else if (entity.getType() == (EntityType) EntityType.SKELETON) {
-					entity.setCustomName(ChatColor.BOLD + "Æò¹üÇÑ ½ºÄÌÀÌ");
+					entity.setCustomName(ChatColor.BOLD + "í‰ë²”í•œ ìŠ¤ì¼ˆì´");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(40);
 					entity.setHealth(40);
@@ -417,11 +420,11 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 2Ãş -78 75 21  -158 87 -30
+			// 2ì¸µ -78 75 21  -158 87 -30
 			if (loc.getX() <= -78 && loc.getY() <= 87 && loc.getZ() <= 21 
 					&& loc.getX() >= -158 && loc.getY() >= 75 && loc.getZ() >= -30) {
 				if (entity.getType() == (EntityType) EntityType.ZOMBIE) {
-					entity.setCustomName(ChatColor.BOLD + "³ª¹«²Û Á»ºñ");
+					entity.setCustomName(ChatColor.BOLD + "ë‚˜ë¬´ê¾¼ ì¢€ë¹„");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(55);
 					entity.setHealth(55);
@@ -444,7 +447,7 @@ public class Main extends JavaPlugin implements Listener{
 					boots.setBoots(bootsItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 3));
 				} else if (entity.getType() == (EntityType) EntityType.SKELETON) {
-					entity.setCustomName(ChatColor.BOLD + "°Ë¼úÀ» ¹è¿î ½ºÄÌÀÌ");
+					entity.setCustomName(ChatColor.BOLD + "ê²€ìˆ ì„ ë°°ìš´ ìŠ¤ì¼ˆì´");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(30);
 					entity.setHealth(30);
@@ -470,11 +473,11 @@ public class Main extends JavaPlugin implements Listener{
 				
 			}
 			
-			// 3Ãş -144 88 -31  -62 99 20
+			// 3ì¸µ -144 88 -31  -62 99 20
 			if (loc.getX() <= -62 && loc.getY() <= 99 && loc.getZ() <= 20 
 					&& loc.getX() >= -144 && loc.getY() >= 88 && loc.getZ() >= -31) {
 				if (entity.getType() == (EntityType) EntityType.ZOMBIE) {
-					entity.setCustomName(ChatColor.BOLD + "ÆÄÀÌ¾î Á»ºñ");
+					entity.setCustomName(ChatColor.BOLD + "íŒŒì´ì–´ ì¢€ë¹„");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(70);
 					entity.setHealth(70);
@@ -509,7 +512,7 @@ public class Main extends JavaPlugin implements Listener{
 					boots.setBoots(bootsItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 4));
 				} else if (entity.getType() == (EntityType) EntityType.BLAZE) {
-					entity.setCustomName(ChatColor.BOLD + "ºÒÀÇ ¿äÁ¤");
+					entity.setCustomName(ChatColor.BOLD + "ë¶ˆì˜ ìš”ì •");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(70);
 					entity.setHealth(70);
@@ -518,17 +521,17 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 4Ãş -77 100 21  -158 111 -30
+			// 4ì¸µ -77 100 21  -158 111 -30
 			if (loc.getX() <= -77 && loc.getY() <= 111 && loc.getZ() <= 21 
 					&& loc.getX() >= -158 && loc.getY() >= 100 && loc.getZ() >= -30) {
 				if (entity.getType() == (EntityType) EntityType.SPIDER) {
-					entity.setCustomName(ChatColor.BOLD + "´Á´ë °Å¹Ì");
+					entity.setCustomName(ChatColor.BOLD + "ëŠ‘ëŒ€ ê±°ë¯¸");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(100);
 					entity.setHealth(100);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 7));
 				} else if (entity.getType() == (EntityType) EntityType.CAVE_SPIDER) {
-					entity.setCustomName(ChatColor.BOLD + "µ¶°Å¹Ì");
+					entity.setCustomName(ChatColor.BOLD + "ë…ê±°ë¯¸");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(100);
 					entity.setHealth(100);
@@ -538,11 +541,11 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 5Ãş -145 114 -31  -62 124 20
+			// 5ì¸µ -145 114 -31  -62 124 20
 			if (loc.getX() <= -62 && loc.getY() <= 124 && loc.getZ() <= 20 
 					&& loc.getX() >= -145 && loc.getY() >= 114 && loc.getZ() >= -31) {
 				if (entity.getType() == (EntityType) EntityType.POLAR_BEAR) {
-					entity.setCustomName(ChatColor.BOLD + "³ªºñ");
+					entity.setCustomName(ChatColor.BOLD + "ë‚˜ë¹„");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(150);
 					entity.setHealth(150);
@@ -556,11 +559,11 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 6Ãş -75 127 21  -143 137 -30
+			// 6ì¸µ -75 127 21  -143 137 -30
 			if (loc.getX() <= -75 && loc.getY() <= 137 && loc.getZ() <= 21 
 					&& loc.getX() >= -143 && loc.getY() >= 127 && loc.getZ() >= -30) {
 				if (entity.getType() == (EntityType) EntityType.IRON_GOLEM) {
-					entity.setCustomName(ChatColor.BOLD + "°í´ë º´±â");
+					entity.setCustomName(ChatColor.BOLD + "ê³ ëŒ€ ë³‘ê¸°");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(180);
 					entity.setHealth(180);
@@ -570,16 +573,16 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 7Ãş -140 139 -31  -73 151 20
+			// 7ì¸µ -140 139 -31  -73 151 20
 			if (loc.getX() <= -73 && loc.getY() <= 151 && loc.getZ() <= 20 
 					&& loc.getX() >= -140 && loc.getY() >= 139 && loc.getZ() >= -31) {
 				if (entity.getType() == (EntityType) EntityType.BLAZE) {
-					entity.setCustomName(ChatColor.BOLD + "ºÒÀÇ È­½Å");
+					entity.setCustomName(ChatColor.BOLD + "ë¶ˆì˜ í™”ì‹ ");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(220);
 					entity.setHealth(220);
 				} else if (entity.getType() == (EntityType) EntityType.WITHER_SKELETON) {
-					entity.setCustomName(ChatColor.BOLD + "°ËÀº ½ºÄÌÀÌ");
+					entity.setCustomName(ChatColor.BOLD + "ê²€ì€ ìŠ¤ì¼ˆì´");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(220);
 					entity.setHealth(220);
@@ -605,11 +608,11 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 8Ãş -73 152 20  -147 165 -30
+			// 8ì¸µ -73 152 20  -147 165 -30
 			if (loc.getX() <= -73 && loc.getY() <= 165 && loc.getZ() <= 20 
 					&& loc.getX() >= -147 && loc.getY() >= 152 && loc.getZ() >= -30) {
 				if (entity.getType() == (EntityType) EntityType.ZOGLIN) {
-					entity.setCustomName(ChatColor.BOLD + "À¯Åë±âÇÑ Áö³­ µÅÁö°í±â");
+					entity.setCustomName(ChatColor.BOLD + "ìœ í†µê¸°í•œ ì§€ë‚œ ë¼ì§€ê³ ê¸°");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(250);
 					entity.setHealth(250);
@@ -619,16 +622,16 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 9Ãş -148 166 -31  -73 177 21
+			// 9ì¸µ -148 166 -31  -73 177 21
 			if (loc.getX() <= -73 && loc.getY() <= 177 && loc.getZ() <= 21 
 					&& loc.getX() >= -148 && loc.getY() >= 166 && loc.getZ() >= -31) {
 				if (entity.getType() == (EntityType) EntityType.ELDER_GUARDIAN) {
-					entity.setCustomName(ChatColor.BOLD + "¹Ù´Ù ½ÅÀü º¸½º");
+					entity.setCustomName(ChatColor.BOLD + "ë°”ë‹¤ ì‹ ì „ ë³´ìŠ¤");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(300);
 					entity.setHealth(300);
 				} else if (entity.getType() == (EntityType) EntityType.GUARDIAN) {
-					entity.setCustomName(ChatColor.BOLD + "¹Ù´Ù ½ÅÀü Àâ¸÷");
+					entity.setCustomName(ChatColor.BOLD + "ë°”ë‹¤ ì‹ ì „ ì¡ëª¹");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(280);
 					entity.setHealth(280);
@@ -637,11 +640,11 @@ public class Main extends JavaPlugin implements Listener{
 				}
 			}
 			
-			// 10Ãş -74 180 21  -142 192 -30
+			// 10ì¸µ -74 180 21  -142 192 -30
 			if (loc.getX() <= -74 && loc.getY() <= 192 && loc.getZ() <= 21 
 					&& loc.getX() >= -142 && loc.getY() >= 180 && loc.getZ() >= -30) {
 				if (entity.getType() == (EntityType) EntityType.VINDICATOR) {
-					entity.setCustomName(ChatColor.BOLD + "Æ÷º¸¸£ ÃßÁ¾ÀÚ");
+					entity.setCustomName(ChatColor.BOLD + "í¬ë³´ë¥´ ì¶”ì¢…ì");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(350);
 					entity.setHealth(350);
@@ -650,19 +653,19 @@ public class Main extends JavaPlugin implements Listener{
 					head.setHelmet(headItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 15));
 				} else if (entity.getType() == (EntityType) EntityType.EVOKER) {
-					entity.setCustomName(ChatColor.BOLD + "Æ÷º¸¸£ ÃßÁ¾ÀÚ");
+					entity.setCustomName(ChatColor.BOLD + "í¬ë³´ë¥´ ì¶”ì¢…ì");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(350);
 					entity.setHealth(350);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 15));
 				} else if (entity.getType() == (EntityType) EntityType.ILLUSIONER) {
-					entity.setCustomName(ChatColor.BOLD + "Æ÷º¸¸£ ÃßÁ¾ÀÚ");
+					entity.setCustomName(ChatColor.BOLD + "í¬ë³´ë¥´ ì¶”ì¢…ì");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(350);
 					entity.setHealth(350);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 15));
 				} else if (entity.getType() == (EntityType) EntityType.RAVAGER) {
-					entity.setCustomName(ChatColor.BOLD + "°í¿À¿È");
+					entity.setCustomName(ChatColor.BOLD + "ê³ ì˜¤ì˜´");
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(350);
 					entity.setHealth(350);
@@ -677,6 +680,40 @@ public class Main extends JavaPlugin implements Listener{
 	
 	@EventHandler
 	public void onHit(EntityDamageByEntityEvent event){
+		// í”Œë ˆì´ì–´ê°€ ê³µê²©
+		try {
+			if(event.getDamager() instanceof Player) {
+				Player player = (Player) event.getDamager();
+				event.setDamage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.1 + event.getDamage());
+			}
+		} catch(Exception e) {
+			
+		}
+		// í™”ì‚´ë¡œ ê³µê²©
+		try {
+			if(event.getDamager() instanceof Arrow) {
+				Arrow arrow = (Arrow) event.getDamager();
+				if(arrow.getShooter() instanceof Player) {
+					Player player = (Player) arrow.getShooter();
+					event.setDamage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.3 + event.getDamage());
+				}
+			}
+		} catch(Exception e) {
+			
+		}
+		// ì‚¼ì§€ì°½ìœ¼ë¡œ ê³µê²©
+		try {
+			if(event.getDamager() instanceof Trident) {
+				Trident arrow = (Trident) event.getDamager();
+				if(arrow.getShooter() instanceof Player) {
+					Player player = (Player) arrow.getShooter();
+					event.setDamage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.3 + event.getDamage());
+				}
+			}
+		} catch(Exception e) {
+			
+		}
+		// ê¸°íƒ€
 		try {
 			if(event.getEntity().getWorld().getName().equals("sao")) {
 				if(event.getDamager() instanceof Player) {
@@ -721,7 +758,7 @@ public class Main extends JavaPlugin implements Listener{
 					if(event.getEntity() instanceof Player) {
 						event.getEntity().setFireTicks(200);
 					}
-				} else if(event.getDamager().getCustomName().equals(ChatColor.BOLD + "ÆÄÀÌ¾î Á»ºñ")) {
+				} else if(event.getDamager().getCustomName().equals(ChatColor.BOLD + "íŒŒì´ì–´ ì¢€ë¹„")) {
 					if(event.getEntity() instanceof Player) {
 						event.getEntity().setFireTicks(200);
 					}
@@ -755,7 +792,7 @@ public class Main extends JavaPlugin implements Listener{
 						if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
 								&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
 							allPlayer.damage(19);
-							allPlayer.sendMessage(ChatColor.RED + "Á×¾î¶ó ÀÎ°£.");
+							allPlayer.sendMessage(ChatColor.RED + "ì£½ì–´ë¼ ì¸ê°„.");
 							// ===============================================================
 							ParticleData pd = new ParticleData(allPlayer.getUniqueId());
 							if (pd.hasID()) {
@@ -773,7 +810,7 @@ public class Main extends JavaPlugin implements Listener{
 						if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
 								&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
 							allPlayer.setFireTicks(200);
-							allPlayer.sendMessage(ChatColor.RED + "±¸¿öÁ®¶ó.");
+							allPlayer.sendMessage(ChatColor.RED + "êµ¬ì›Œì ¸ë¼.");
 							// ===============================================================
 							ParticleData pd = new ParticleData(allPlayer.getUniqueId());
 							if (pd.hasID()) {
@@ -791,7 +828,7 @@ public class Main extends JavaPlugin implements Listener{
 						player.damage(10);
 						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0));
 						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 0));
-						player.sendMessage(ChatColor.RED + "°íÅë¹Ş¾Æ¶ó.");
+						player.sendMessage(ChatColor.RED + "ê³ í†µë°›ì•„ë¼.");
 						// ===============================================================
 						ParticleData pd = new ParticleData(player.getUniqueId());
 						if (pd.hasID()) {
@@ -807,7 +844,7 @@ public class Main extends JavaPlugin implements Listener{
 						player.damage(10);
 						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0));
 						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 0));
-						player.sendMessage(ChatColor.RED + "°íÅë¹Ş¾Æ¶ó.");
+						player.sendMessage(ChatColor.RED + "ê³ í†µë°›ì•„ë¼.");
 						// ===============================================================
 						ParticleData pd = new ParticleData(player.getUniqueId());
 						if (pd.hasID()) {
@@ -830,6 +867,34 @@ public class Main extends JavaPlugin implements Listener{
 	
 	@EventHandler
 	public void skillDamage(EntityDamageEvent event) {
+		// í”Œë ˆì´ì–´ê°€ ë§ìŒ
+		try {
+			if (event.getEntity() instanceof Player) {
+				Player player = (Player) event.getEntity();
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getHelmet().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getChestplate().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getLeggings().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getBoots().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+			}
+		} catch (Exception e) {
+
+		}
 		if(event.getEntity().getWorld().getName().equals("sao")) {
 			if (event.getCause() == DamageCause.DROWNING) {
 				if (event.getEntity() instanceof Mob) {
@@ -858,8 +923,8 @@ public class Main extends JavaPlugin implements Listener{
 	public void mobDeathEvent(EntityDeathEvent event) {
 		if(event.getEntity() instanceof EnderDragon) {
 			for (Player allPlayer : Bukkit.getOnlinePlayers()) {
-				allPlayer.sendMessage(ChatColor.GRAY + "[System] Ãß°¡ ÄÁÅÙÃ÷ °³¹æÀ» ÃàÇÏµå¸³´Ï´Ù! ¸¶À»¿¡¼­ ÆÇ¸ÅÇÏ°í ÀÖ´Â Â÷¿ø ÀÌµ¿¼­¸¦ ÅëÇØ »õ·Î¿î ¼¼°è·Î °¥ ¼ö ÀÖ°Ô µÇ¾ú½À´Ï´Ù. »õ·Î¿î ¼¼°è¿¡¼­´Â "
-						+ "±âÁ¸°ú ´Ù¸¥ ÀüÅõ ½Ã½ºÅÛÀÌ Àû¿ëµË´Ï´Ù. 1. ·¹º§¿¡ µû¸¥ Ãß°¡ °ø°İ·Â ¼öÄ¡°¡ Àû¿ëµË´Ï´Ù. 2. ÇÃ·¹ÀÌ¾î´Â ¼­·Î °ø°İÇÒ ¼ö ¾ø½À´Ï´Ù. 3. À§Çè±¸¿ª¿¡¼­´Â ¸ó½ºÅÍ°¡ ÁÖÀ§¿¡ °è¼Ó ½ºÆùµË´Ï´Ù. 4. ¸ó½ºÅÍ¿Í ¸Ö¾îÁö¸é ¸ó½ºÅÍ´Â »ç¶óÁı´Ï´Ù.");
+				allPlayer.sendMessage(ChatColor.GRAY + "[System] ì¶”ê°€ ì»¨í…ì¸  ê°œë°©ì„ ì¶•í•˜ë“œë¦½ë‹ˆë‹¤! ë§ˆì„ì—ì„œ íŒë§¤í•˜ê³  ìˆëŠ” ì°¨ì› ì´ë™ì„œë¥¼ í†µí•´ ìƒˆë¡œìš´ ì„¸ê³„ë¡œ ê°ˆ ìˆ˜ ìˆê²Œ ë˜ì—ˆìŠµë‹ˆë‹¤. ìƒˆë¡œìš´ ì„¸ê³„ì—ì„œëŠ” "
+						+ "ê¸°ì¡´ê³¼ ë‹¤ë¥¸ ì „íˆ¬ ì‹œìŠ¤í…œì´ ì ìš©ë©ë‹ˆë‹¤. 1. ë ˆë²¨ì— ë”°ë¥¸ ì¶”ê°€ ê³µê²©ë ¥ ìˆ˜ì¹˜ê°€ ì ìš©ë©ë‹ˆë‹¤. 2. í”Œë ˆì´ì–´ëŠ” ì„œë¡œ ê³µê²©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤. 3. ìœ„í—˜êµ¬ì—­ì—ì„œëŠ” ëª¬ìŠ¤í„°ê°€ ì£¼ìœ„ì— ê³„ì† ìŠ¤í°ë©ë‹ˆë‹¤. 4. ëª¬ìŠ¤í„°ì™€ ë©€ì–´ì§€ë©´ ëª¬ìŠ¤í„°ëŠ” ì‚¬ë¼ì§‘ë‹ˆë‹¤.");
 			}
 		}
 		
@@ -868,61 +933,61 @@ public class Main extends JavaPlugin implements Listener{
 			Location loc = ent.getLocation();
 			if(ent.getWorld().getName().equals("sao")) {
 				event.getDrops().clear();
-				if(ent.getCustomName().equals(ChatColor.BOLD + "Æò¹üÇÑ Á»ºñ")) {
+				if(ent.getCustomName().equals(ChatColor.BOLD + "í‰ë²”í•œ ì¢€ë¹„")) {
 					event.setDroppedExp(2);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.QUARTZ, rnd.nextInt(3)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "Æò¹üÇÑ ½ºÄÌÀÌ")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "í‰ë²”í•œ ìŠ¤ì¼ˆì´")) {
 					event.setDroppedExp(2);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.ARROW, rnd.nextInt(3)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "³ª¹«²Û Á»ºñ")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ë‚˜ë¬´ê¾¼ ì¢€ë¹„")) {
 					event.setDroppedExp(3);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.OAK_LOG, rnd.nextInt(5)+5));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "°Ë¼úÀ» ¹è¿î ½ºÄÌÀÌ")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ê²€ìˆ ì„ ë°°ìš´ ìŠ¤ì¼ˆì´")) {
 					event.setDroppedExp(3);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.IRON_INGOT, rnd.nextInt(3)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ÆÄÀÌ¾î Á»ºñ")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "íŒŒì´ì–´ ì¢€ë¹„")) {
 					event.setDroppedExp(5);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.REDSTONE, rnd.nextInt(5)+3));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.GUNPOWDER, rnd.nextInt(5)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ºÒÀÇ ¿äÁ¤")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ë¶ˆì˜ ìš”ì •")) {
 					event.setDroppedExp(5);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.BLAZE_ROD, rnd.nextInt(3)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "´Á´ë °Å¹Ì")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ëŠ‘ëŒ€ ê±°ë¯¸")) {
 					event.setDroppedExp(8);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.SPIDER_EYE, rnd.nextInt(3)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.STRING, rnd.nextInt(2)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "µ¶°Å¹Ì")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ë…ê±°ë¯¸")) {
 					event.setDroppedExp(8);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.SPIDER_EYE, rnd.nextInt(5)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "³ªºñ")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ë‚˜ë¹„")) {
 					event.setDroppedExp(10);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.GOLD_INGOT, rnd.nextInt(3)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "°í´ë º´±â")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ê³ ëŒ€ ë³‘ê¸°")) {
 					event.setDroppedExp(12);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.IRON_INGOT, rnd.nextInt(3)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.NETHERITE_SCRAP, rnd.nextInt(2)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ºÒÀÇ È­½Å")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ë¶ˆì˜ í™”ì‹ ")) {
 					event.setDroppedExp(15);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.BLAZE_ROD, rnd.nextInt(3)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.GOLD_INGOT, rnd.nextInt(3)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "°ËÀº ½ºÄÌÀÌ")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ê²€ì€ ìŠ¤ì¼ˆì´")) {
 					event.setDroppedExp(15);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.WITHER_SKELETON_SKULL, rnd.nextInt(2)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.BONE, rnd.nextInt(4)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "À¯Åë±âÇÑ Áö³­ µÅÁö°í±â")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ìœ í†µê¸°í•œ ì§€ë‚œ ë¼ì§€ê³ ê¸°")) {
 					event.setDroppedExp(20);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.PORKCHOP, rnd.nextInt(5)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.ENDER_PEARL, rnd.nextInt(2)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "¹Ù´Ù ½ÅÀü º¸½º")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ë°”ë‹¤ ì‹ ì „ ë³´ìŠ¤")) {
 					event.setDroppedExp(25);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.DIAMOND, rnd.nextInt(5)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "¹Ù´Ù ½ÅÀü Àâ¸÷")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ë°”ë‹¤ ì‹ ì „ ì¡ëª¹")) {
 					event.setDroppedExp(25);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.DIAMOND, rnd.nextInt(3)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "Æ÷º¸¸£ ÃßÁ¾ÀÚ")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "í¬ë³´ë¥´ ì¶”ì¢…ì")) {
 					event.setDroppedExp(40);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.EMERALD, rnd.nextInt(5)));
-				} else if(ent.getCustomName().equals(ChatColor.BOLD + "°í¿À¿È")) {
+				} else if(ent.getCustomName().equals(ChatColor.BOLD + "ê³ ì˜¤ì˜´")) {
 					event.setDroppedExp(50);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.NETHER_STAR, rnd.nextInt(2)));
 				}
@@ -937,102 +1002,160 @@ public class Main extends JavaPlugin implements Listener{
 		Player player = (Player) event.getPlayer();
 		Item itemArg = event.getItemDrop();
 		World world = player.getWorld();
-		if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "Â÷¿ø ÀÌµ¿¼­")) {
-			if(world == this.world) {
-				player.teleport(new Location(sao, -151, 66, -25));
-				itemArg.remove();
-			} else if(world == sao) {
-				player.teleport(new Location(this.world, -185, 68, -104));
-				itemArg.remove();
-			}
-		}
 		
-		if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "ÀÎÃ¦Æ® ÃßÃâ¼­")) {
-			ItemStack weapon = player.getInventory().getItemInMainHand();
-			ArrayList<Enchantment> ary1 = new ArrayList<>();
-			ArrayList<Integer> ary2 = new ArrayList<>();
-			if(weapon.getEnchantments().size() == 0) {
-				player.sendMessage(ChatColor.GRAY + "¾ÆÀÌÅÛ¿¡ ÀÎÃ¦Æ®°¡ ºÎ¿©µÇ¾î ÀÖÁö ¾Ê½À´Ï´Ù.");
-			} else {
-				Map<Enchantment, Integer> map = weapon.getEnchantments();
-				ary1.addAll(map.keySet());
-				ary2.addAll(map.values());
-				ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
-				EnchantmentStorageMeta eb = (EnchantmentStorageMeta) item.getItemMeta();
-				for(int i = 0 ; i < ary1.size() ; i++) {
-					eb.addStoredEnchant(ary1.get(i), ary2.get(i), true);
-				}
-				item.setItemMeta(eb);
-				weapon.setAmount(0);
-				itemArg.remove();
-				player.getInventory().addItem(item);
+		try {
+			// ë“œë ë¶ˆê°€
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "ê°•í™”í•˜ê¸°")) {
+				event.setCancelled(true);
+				return;
 			}
-		}
-		
-		if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "°Ôºê³×ÀÇ ÁÖ¼ú¼­")) {
-			ItemStack weapon = player.getInventory().getItemInMainHand();
-			ItemMeta im = weapon.getItemMeta();
-			try {
-				im.setDisplayName(ChatColor.DARK_PURPLE + im.getDisplayName().substring(2));
-			} catch(Exception e) {
-
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "ë‚˜ê°€ê¸°")) {
+				event.setCancelled(true);
+				return;
 			}
-			im.setUnbreakable(true);
-			weapon.setItemMeta(im);
-			itemArg.remove();
-		}
-		
-		if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "¿¤µå¸¯ ÀÌµ¿¼­")) {
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + " ")) {
+				event.setCancelled(true);
+				return;
+			}
+		} catch(Exception e) {
 			
-			if(player.getWorld() == sao) {
-				// -155 199 -31  -159 208 -26
-				if (player.getLocation().getX() <= -155 && player.getLocation().getY() <= 208
-						&& player.getLocation().getZ() <= -26 && player.getLocation().getX() >= -159
-						&& player.getLocation().getY() >= 199 && player.getLocation().getZ() >= -31) {
+		}
+		
+		try {
+			// ìŠ¤í¬ë¡¤
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "ì°¨ì› ì´ë™ì„œ")) {
+				if(world == this.world) {
+					player.teleport(new Location(sao, -151, 66, -25));
 					itemArg.remove();
-					player.teleport(new Location(Bukkit.getWorld("sao"), -79, 202, -26));
-					List<Entity> list = player.getNearbyEntities(100, 100, 100);
-					int tmp = 0;
-					for(Entity ent : list) {
-						if(ent instanceof Player) {
-							Player nearP = (Player) ent;
-							Location loc = nearP.getLocation();
-							// -98 194 -31  -62 214 21
-							if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
-									&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
-								tmp++;
-							}
-						}
-					}
-					if(tmp == 0) {
-						
-						for(Entity ent : list) {
-							if(ent instanceof Giant) {
-								ent.remove();
-								bar.removeAll();
-							}
-						}
-						
-						Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 202, 7), EntityType.GIANT);
-						g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
-						g.setAI(false);
-						g.setMaxHealth(30000);
-						g.setHealth(30000);
-						
-						bar.setProgress(g.getHealth() / 30000.0);
-						for(Player p : Bukkit.getOnlinePlayers()) {
-							if(p.getWorld() == sao) {
-								bar.addPlayer(p);
-							}
-						}
-						
-					}
+				} else if(world == sao) {
+					player.teleport(new Location(this.world, -146, 66, -167));
+					itemArg.remove();
 				}
 			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "ì¸ì±ˆíŠ¸ ì¶”ì¶œì„œ")) {
+				ItemStack weapon = player.getInventory().getItemInMainHand();
+				ArrayList<Enchantment> ary1 = new ArrayList<>();
+				ArrayList<Integer> ary2 = new ArrayList<>();
+				if(weapon.getEnchantments().size() == 0) {
+					player.sendMessage(ChatColor.GRAY + "ì•„ì´í…œì— ì¸ì±ˆíŠ¸ê°€ ë¶€ì—¬ë˜ì–´ ìˆì§€ ì•ŠìŠµë‹ˆë‹¤.");
+				} else {
+					Map<Enchantment, Integer> map = weapon.getEnchantments();
+					ary1.addAll(map.keySet());
+					ary2.addAll(map.values());
+					ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
+					EnchantmentStorageMeta eb = (EnchantmentStorageMeta) item.getItemMeta();
+					for(int i = 0 ; i < ary1.size() ; i++) {
+						eb.addStoredEnchant(ary1.get(i), ary2.get(i), true);
+					}
+					item.setItemMeta(eb);
+					weapon.setAmount(0);
+					itemArg.remove();
+					player.getInventory().addItem(item);
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "ê²Œë¸Œë„¤ì˜ ì£¼ìˆ ì„œ")) {
+				ItemStack weapon = player.getInventory().getItemInMainHand();
+				ItemMeta im = weapon.getItemMeta();
+				try {
+					im.setDisplayName(ChatColor.DARK_PURPLE + im.getDisplayName().substring(2));
+				} catch(Exception e) {
+
+				}
+				im.setUnbreakable(true);
+				weapon.setItemMeta(im);
+				itemArg.remove();
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "ì—˜ë“œë¦­ ì´ë™ì„œ")) {
+				
+				if(player.getWorld() == sao) {
+					// -155 199 -31  -159 208 -26
+					if (player.getLocation().getX() <= -155 && player.getLocation().getY() <= 208
+							&& player.getLocation().getZ() <= -26 && player.getLocation().getX() >= -159
+							&& player.getLocation().getY() >= 199 && player.getLocation().getZ() >= -31) {
+						itemArg.remove();
+						player.teleport(new Location(Bukkit.getWorld("sao"), -79, 202, -26));
+						List<Entity> list = player.getNearbyEntities(100, 100, 100);
+						int tmp = 0;
+						for(Entity ent : list) {
+							if(ent instanceof Player) {
+								Player nearP = (Player) ent;
+								Location loc = nearP.getLocation();
+								// -98 194 -31  -62 214 21
+								if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+										&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+									tmp++;
+								}
+							}
+						}
+						if(tmp == 0) {
+							
+							for(Entity ent : list) {
+								if(ent instanceof Giant) {
+									ent.remove();
+									bar.removeAll();
+								}
+							}
+							
+							Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 202, 7), EntityType.GIANT);
+							g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
+							g.setAI(false);
+							g.setMaxHealth(30000);
+							g.setHealth(30000);
+							
+							bar.setProgress(g.getHealth() / 30000.0);
+							for(Player p : Bukkit.getOnlinePlayers()) {
+								if(p.getWorld() == sao) {
+									bar.addPlayer(p);
+								}
+							}
+							
+						}
+					}
+				}
+				
+			}
+		} catch(Exception e) {
+			
+		}
+		
+		try {
+			//ê°•í™” ìŠ¤í¬ë¡¤
+			ReinforcementScroll reinScroll = new ReinforcementScroll();
+			reinScroll.openInv(player, itemArg);
+		} catch(Exception e) {
+			
+		}
+		
+	}
+
+	@EventHandler
+	public void invenclick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		ItemStack item = event.getCurrentItem();
+		try {
+			if (item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "ê°•í™”í•˜ê¸°")) {
+				Inventory inv = event.getInventory();
+        		new ReinforcementMakeEvent().rein(player, inv);
+        		event.setCancelled(true);
+        		return;
+			}
+			if (item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "ë‚˜ê°€ê¸°")) {
+				player.closeInventory();
+				event.setCancelled(true);
+				return;
+			}
+			if (item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + " ")) {
+				event.setCancelled(true);
+				return;
+			}
+		} catch(Exception e) {
 			
 		}
 	}
-
+	
 	@EventHandler
 	public void regenHealth(EntityRegainHealthEvent event) {
 		if(event.getEntity().getWorld().getName().equalsIgnoreCase("sao")) {
@@ -1132,6 +1255,15 @@ public class Main extends JavaPlugin implements Listener{
 		}
 		
 	}
+	
+	@EventHandler
+	public void chatToServer(AsyncPlayerChatEvent event) {
+		try {
+			System.out.println(event.getPlayer().getDisplayName() + ": " + event.getMessage());
+		} catch(Exception e) {
+			
+		}
+	}
 
 	@EventHandler
 	public void playerOff(PlayerQuitEvent event) {
@@ -1147,4 +1279,55 @@ public class Main extends JavaPlugin implements Listener{
 		}
 	}
 	
-}
+	@EventHandler
+	public void expEvent(PlayerExpChangeEvent event) {
+		Player player = event.getPlayer();
+		if (player.getInventory().getHelmet() != null) {
+			if (player.getInventory().getChestplate() != null) {
+				if (player.getInventory().getLeggings() != null) {
+					if (player.getInventory().getBoots() != null) {
+						
+						if (player.getInventory().getHelmet().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Morph-Stardust")) {
+							if (player.getInventory().getChestplate().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Morph-Steel")) {
+								if (player.getInventory().getLeggings().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Morph-Iron")) {
+									if (player.getInventory().getBoots().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Morph-Gold")) {
+										
+										event.setAmount(event.getAmount() * 2);
+										
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	@EventHandler
+	public void InvenClose(InventoryCloseEvent event) {
+		try {
+			Inventory inv = event.getInventory();
+			Player player = (Player) event.getPlayer();
+			
+			// ê°•í™”
+			try {
+				if(inv.getItem(7).getType() == Material.SLIME_BALL) {
+					if(inv.getItem(8).getType() == Material.MAGMA_CREAM) {
+						if(inv.getItem(2).getType() == Material.BARRIER) {
+							if(inv.getSize() == 9) {
+								try {player.getInventory().addItem(inv.getItem(0));} catch(Exception e) {}
+								try {player.getInventory().addItem(inv.getItem(1));} catch(Exception e) {}
+							}
+						}
+					}
+				}
+			} catch(Exception e) {
+				
+			}
+		} catch(Exception e) {
+			
+		}
+	}
+}	

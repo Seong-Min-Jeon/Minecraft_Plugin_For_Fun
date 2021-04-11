@@ -35,6 +35,19 @@ public class RefreshServer {
 			@Override
 			public void run() {
 				
+				if (time % 80 == 10) {
+					for(Player allPlayer : Bukkit.getOnlinePlayers()) {
+						Location loc = allPlayer.getLocation();
+						if(loc.getWorld() == Bukkit.getWorld("world")) {
+							allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 80, 0, true, false, false));
+//							allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 80, 11, true, false, false));
+						}
+					}
+					
+					world = Bukkit.getWorld("world");
+					world.spawnEntity(new Location(world, -218, 85, -192), EntityType.ZOMBIFIED_PIGLIN);
+				}
+				
 				if(time % 300 == 0) {
 					// 보스전 데미지
 					for(Player allPlayer : Bukkit.getOnlinePlayers()) {
