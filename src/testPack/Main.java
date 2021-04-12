@@ -18,6 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.ElderGuardian;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -685,6 +686,19 @@ public class Main extends JavaPlugin implements Listener{
 			if(event.getDamager() instanceof Player) {
 				Player player = (Player) event.getDamager();
 				event.setDamage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.1 + event.getDamage());
+				
+				List<Entity> entitylist = player.getNearbyEntities(5, 5, 5);	
+				for (Entity nearEntity : entitylist) {
+					if (nearEntity.getType() != EntityType.PLAYER) {
+						if (nearEntity instanceof LivingEntity) {
+							if(nearEntity == event.getEntity()) {
+								continue;
+							}
+							((LivingEntity) nearEntity).damage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.07);
+						}
+					}
+				}
+				
 			}
 		} catch(Exception e) {
 			
@@ -779,13 +793,50 @@ public class Main extends JavaPlugin implements Listener{
 		} catch(Exception e) {
 			
 		}
+	}
+	
+	@EventHandler
+	public void skillDamage(EntityDamageEvent event) {
+		// 플레이어가 맞음
+		try {
+			if (event.getEntity() instanceof Player) {
+				Player player = (Player) event.getEntity();
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getHelmet().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getChestplate().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getLeggings().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+				try {
+					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getBoots().getItemMeta().getLocalizedName())) * 0.05);
+				} catch(Exception e) {
+					
+				}
+			}
+		} catch (Exception e) {
 
+		}
+		
+		if(event.getDamage() <= 0) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		try {
 			if(event.getEntity() instanceof Giant) {
 				event.setCancelled(true);
 				((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
 				
-				int num = rnd.nextInt(20);
+				int num = rnd.nextInt(15);
 				if(num == 0) {
 					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
 						Location loc = allPlayer.getLocation();
@@ -823,78 +874,32 @@ public class Main extends JavaPlugin implements Listener{
 						}
 					}
 				} else if(num == 3) {
-					if(event.getDamager() instanceof Player) {
-						Player player = (Player) event.getDamager();
-						player.damage(10);
-						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0));
-						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 0));
-						player.sendMessage(ChatColor.RED + "고통받아라.");
-						// ===============================================================
-						ParticleData pd = new ParticleData(player.getUniqueId());
-						if (pd.hasID()) {
-							pd.endTask();
-							pd.removeID();
+					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+						Location loc = allPlayer.getLocation();
+						if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+								&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+							allPlayer.damage(10);
+							allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0));
+							allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 4));
+							allPlayer.sendMessage(ChatColor.RED + "고통받아라.");
+							// ===============================================================
+							ParticleData pd = new ParticleData(allPlayer.getUniqueId());
+							if (pd.hasID()) {
+								pd.endTask();
+								pd.removeID();
+							}
+							ParticleEffect pe = new ParticleEffect(allPlayer);
+							pe.startE17();
+							// ================================================================
 						}
-						ParticleEffect pe = new ParticleEffect(player);
-						pe.startE17();
-						// ================================================================
-					} else if(event.getDamager() instanceof Arrow) {
-						Arrow arrow = (Arrow) event.getDamager();
-						Player player = (Player) arrow.getShooter();
-						player.damage(10);
-						player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 0));
-						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 0));
-						player.sendMessage(ChatColor.RED + "고통받아라.");
-						// ===============================================================
-						ParticleData pd = new ParticleData(player.getUniqueId());
-						if (pd.hasID()) {
-							pd.endTask();
-							pd.removeID();
-						}
-						ParticleEffect pe = new ParticleEffect(player);
-						pe.startE17();
-						// ================================================================
 					}
 				}
-				
-				
 				
 			}
 		} catch(Exception e) {
 			
 		}
-	}
-	
-	@EventHandler
-	public void skillDamage(EntityDamageEvent event) {
-		// 플레이어가 맞음
-		try {
-			if (event.getEntity() instanceof Player) {
-				Player player = (Player) event.getEntity();
-				try {
-					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getHelmet().getItemMeta().getLocalizedName())) * 0.05);
-				} catch(Exception e) {
-					
-				}
-				try {
-					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getChestplate().getItemMeta().getLocalizedName())) * 0.05);
-				} catch(Exception e) {
-					
-				}
-				try {
-					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getLeggings().getItemMeta().getLocalizedName())) * 0.05);
-				} catch(Exception e) {
-					
-				}
-				try {
-					event.setDamage(event.getDamage() - (Integer.parseInt(player.getInventory().getBoots().getItemMeta().getLocalizedName())) * 0.05);
-				} catch(Exception e) {
-					
-				}
-			}
-		} catch (Exception e) {
-
-		}
+		
 		if(event.getEntity().getWorld().getName().equals("sao")) {
 			if (event.getCause() == DamageCause.DROWNING) {
 				if (event.getEntity() instanceof Mob) {
