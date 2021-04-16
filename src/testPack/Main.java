@@ -1303,6 +1303,31 @@ public class Main extends JavaPlugin implements Listener{
 								}
 							}
 						}
+						
+						if (player.getInventory().getHelmet().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "프리미엄 헬멧")) {
+							if (player.getInventory().getChestplate().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "프리미엄 갑옷")) {
+								if (player.getInventory().getLeggings().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "프리미엄 각반")) {
+									if (player.getInventory().getBoots().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "프리미엄 신발")) {
+										
+										event.setAmount(event.getAmount() * 3);
+										
+									}
+								}
+							}
+						}
+						
+						if (player.getInventory().getHelmet().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "자유로운 신념의 헬멧")) {
+							if (player.getInventory().getChestplate().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "자유로운 신념의 갑옷")) {
+								if (player.getInventory().getLeggings().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "자유로운 신념의 각반")) {
+									if (player.getInventory().getBoots().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "자유로운 신념의 신발")) {
+										
+										event.setAmount(event.getAmount() * 4);
+										
+									}
+								}
+							}
+						}
+						
 					}
 				}
 			}
