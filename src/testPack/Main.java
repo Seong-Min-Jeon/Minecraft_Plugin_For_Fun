@@ -11,10 +11,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Creeper;
@@ -34,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.PolarBear;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.entity.Trident;
+import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.entity.Zoglin;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -78,7 +82,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
@@ -550,10 +554,8 @@ public class Main extends JavaPlugin implements Listener{
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(150);
 					entity.setHealth(150);
-					if(rnd.nextInt(2) == 0) {
-						PolarBear zombie = (PolarBear) entity;
-						zombie.setBaby();
-					}
+					PolarBear zombie = (PolarBear) entity;
+					zombie.setAdult();
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 8));
 				} else {
 					event.setCancelled(true);
@@ -730,6 +732,116 @@ public class Main extends JavaPlugin implements Listener{
 		// 기타
 		try {
 			if(event.getEntity().getWorld().getName().equals("sao")) {
+				
+				// 곰
+				try {
+					if (event.getEntity() instanceof PolarBear) {
+						if (event.getDamager() instanceof Player) {
+							Player player = (Player) event.getDamager();
+							((PolarBear) event.getEntity()).setTarget(player);
+							List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+							for (Entity nearEntity : entitylist) {
+								if (nearEntity instanceof PolarBear) {
+									((PolarBear) nearEntity).setTarget(player);
+								}
+							}
+						} else if(event.getDamager() instanceof Arrow) {
+							Arrow proj = (Arrow) event.getDamager();
+							if(proj.getShooter() instanceof Player) {
+								Player player = (Player) proj.getShooter();
+								((PolarBear) event.getEntity()).setTarget(player);
+								List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+								for (Entity nearEntity : entitylist) {
+									if (nearEntity instanceof PolarBear) {
+										((PolarBear) nearEntity).setTarget(player);
+									}
+								}
+							}
+						} else if(event.getDamager() instanceof SmallFireball) {
+							SmallFireball proj = (SmallFireball) event.getDamager();
+							if(proj.getShooter() instanceof Player) {
+								Player player = (Player) proj.getShooter();
+								((PolarBear) event.getEntity()).setTarget(player);
+								List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+								for (Entity nearEntity : entitylist) {
+									if (nearEntity instanceof PolarBear) {
+										((PolarBear) nearEntity).setTarget(player);
+									}
+								}
+							}
+						} else if(event.getDamager() instanceof Trident) {
+							Trident proj = (Trident) event.getDamager();
+							if(proj.getShooter() instanceof Player) {
+								Player player = (Player) proj.getShooter();
+								((PolarBear) event.getEntity()).setTarget(player);
+								List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+								for (Entity nearEntity : entitylist) {
+									if (nearEntity instanceof PolarBear) {
+										((PolarBear) nearEntity).setTarget(player);
+									}
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+
+				}
+				
+				// 골렘
+				try {
+					if (event.getEntity() instanceof IronGolem) {
+						if (event.getDamager() instanceof Player) {
+							Player player = (Player) event.getDamager();
+							((IronGolem) event.getEntity()).setTarget(player);
+							List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+							for (Entity nearEntity : entitylist) {
+								if (nearEntity instanceof IronGolem) {
+									((IronGolem) nearEntity).setTarget(player);
+								}
+							}
+						} else if(event.getDamager() instanceof Arrow) {
+							Arrow proj = (Arrow) event.getDamager();
+							if(proj.getShooter() instanceof Player) {
+								Player player = (Player) proj.getShooter();
+								((IronGolem) event.getEntity()).setTarget(player);
+								List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+								for (Entity nearEntity : entitylist) {
+									if (nearEntity instanceof IronGolem) {
+										((IronGolem) nearEntity).setTarget(player);
+									}
+								}
+							}
+						} else if(event.getDamager() instanceof SmallFireball) {
+							SmallFireball proj = (SmallFireball) event.getDamager();
+							if(proj.getShooter() instanceof Player) {
+								Player player = (Player) proj.getShooter();
+								((IronGolem) event.getEntity()).setTarget(player);
+								List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+								for (Entity nearEntity : entitylist) {
+									if (nearEntity instanceof IronGolem) {
+										((IronGolem) nearEntity).setTarget(player);
+									}
+								}
+							}
+						} else if(event.getDamager() instanceof Trident) {
+							Trident proj = (Trident) event.getDamager();
+							if(proj.getShooter() instanceof Player) {
+								Player player = (Player) proj.getShooter();
+								((IronGolem) event.getEntity()).setTarget(player);
+								List<Entity> entitylist = event.getEntity().getNearbyEntities(30, 5, 30);
+								for (Entity nearEntity : entitylist) {
+									if (nearEntity instanceof IronGolem) {
+										((IronGolem) nearEntity).setTarget(player);
+									}
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+
+				}
+				
+				
 				if(event.getDamager() instanceof Player) {
 					Player player = (Player) event.getDamager();
 					if(event.getEntity() instanceof Player) {
@@ -831,6 +943,29 @@ public class Main extends JavaPlugin implements Listener{
 			return;
 		}
 		
+		//몹 스킬 트리거
+		try {
+			try {
+				if (event.getEntity() instanceof Mob) {
+					Entity entity = (Entity) event.getEntity();
+					Player player = null;
+					List<Entity> nearEntity = entity.getNearbyEntities(20, 5, 20);
+					for(Entity ent : nearEntity) {
+					    if(ent instanceof Player) {
+					        player = (Player) ent;
+					        break;
+					    }
+					}
+					PlayerHitDebuff debuff = new PlayerHitDebuff();
+					debuff.playerHitDebuff(player, entity);
+				}
+			} catch (Exception e) {
+				
+			}
+		} catch(Exception e) {
+			
+		}
+		
 		try {
 			if(event.getEntity() instanceof Giant) {
 				event.setCancelled(true);
@@ -919,81 +1054,216 @@ public class Main extends JavaPlugin implements Listener{
 			
 			if(event.getEntity() instanceof Giant) {
 				bar.setProgress(((LivingEntity) event.getEntity()).getHealth() / 30000.0);
+				if(((LivingEntity) event.getEntity()).getHealth() <= 0) {
+					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+						allPlayer.sendMessage("이세계를 위협하던 보스가 소멸하였습니다.");
+						allPlayer.sendMessage("한동안 평화가 지속될 것 입니다.");
+						allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, Integer.MAX_VALUE, 0));
+						Location loc = allPlayer.getLocation();
+						if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
+								&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
+							allPlayer.teleport(new Location(this.world, -146, 66, -167));
+						}
+					}
+				}
 			}
 			
 		}
+		
+		try {
+			if(!(event.getEntity() instanceof Player)) {
+				Entity mob = event.getEntity();
+				// 코낭그
+				if (mob.getCustomName().substring(2).equalsIgnoreCase("코낭그" + ChatColor.YELLOW + " [Lv.??]")) {
+
+					LivingEntity boss = (LivingEntity) mob;
+					
+					if(boss.getHealth() - event.getFinalDamage() <= 0) {
+						for(Player p : new BossHealth().getBar1().getPlayers()) {
+							new BossHealth().getBar1().setProgress(0);
+							new BossHealth().getBar1().removePlayer(p);
+						}
+					} else {
+						new BossHealth().getBar1().setProgress((boss.getHealth()-event.getFinalDamage()) / 700000.0);
+					}
+				}
+			}
+		} catch(Exception e) {
+			
+		}
+		
+		// 데미지 표기
+		try {
+			if(event.getEntity() instanceof Mob) {
+				Entity entity = event.getEntity();
+				
+				int damage = (int)event.getFinalDamage();
+				
+				if(damage > 0 && !(event.getCause() == DamageCause.ENTITY_ATTACK) && !(event.getCause() == DamageCause.ENTITY_SWEEP_ATTACK)) {
+					ArmorStand damageSign = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().add(0,0.8,0), EntityType.ARMOR_STAND);
+					damageSign.setVisible(false);
+					damageSign.setSmall(true);
+					
+					if(damage < 1) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#808080") + Integer.toString(damage));
+					} else if(damage < 2) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#B4B4B4") + Integer.toString(damage));
+					} else if(damage < 3) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#E5E5E5") + Integer.toString(damage));
+					} else if(damage < 4) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#EFEFEF") + Integer.toString(damage));
+					} else if(damage < 5) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#FFFFFF") + Integer.toString(damage));
+					} else if(damage < 6) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#f2ffeb") + Integer.toString(damage));
+					} else if(damage < 7) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#e0ffcf") + Integer.toString(damage));
+					} else if(damage < 8) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ccffb0") + Integer.toString(damage));
+					} else if(damage < 9) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#b3ff8a") + Integer.toString(damage));
+					} else if(damage < 10) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#9dff69") + Integer.toString(damage));
+					} else if(damage < 20) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#7fff3b") + Integer.toString(damage));
+					} else if(damage < 30) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#1aff00") + Integer.toString(damage));
+					} else if(damage < 40) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00ff77") + Integer.toString(damage));
+					} else if(damage < 50) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00ffc3") + Integer.toString(damage));
+					} else if(damage < 60) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00fff7") + Integer.toString(damage));
+					} else if(damage < 70) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00d0ff") + Integer.toString(damage));
+					} else if(damage < 80) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00aeff") + Integer.toString(damage));
+					} else if(damage < 90) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#008cff") + Integer.toString(damage));
+					} else if(damage < 100) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#0062ff") + Integer.toString(damage));
+					} else if(damage < 200) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#002aff") + Integer.toString(damage));
+					} else if(damage < 300) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#3c00ff") + Integer.toString(damage));
+					} else if(damage < 400) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#8c00ff") + Integer.toString(damage));
+					} else if(damage < 500) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#c300ff") + Integer.toString(damage));
+					} else if(damage < 600) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff00f7") + Integer.toString(damage));
+					} else if(damage < 700) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff00b3") + Integer.toString(damage));
+					} else if(damage < 800) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0080") + Integer.toString(damage));
+					} else if(damage < 900) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0048") + Integer.toString(damage));
+					} else if(damage < 1000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0000") + Integer.toString(damage));
+					} else if(damage < 2000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ab0000") + Integer.toString(damage));
+					} else if(damage < 3000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#630000") + Integer.toString(damage));
+					} else if(damage < 4000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#8f0062") + Integer.toString(damage));
+					} else if(damage < 5000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#70008f") + Integer.toString(damage));
+					} else if(damage < 6000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#420054") + Integer.toString(damage));
+					} else if(damage < 100000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + ChatColor.MAGIC + Integer.toString(damage));
+					} else {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ffffff") + Integer.toString(damage));
+					}
+					damageSign.setCustomNameVisible(true);
+					damageSign.setGravity(false);
+					damageSign.setRemoveWhenFarAway(true);
+					
+					new BukkitRunnable() {
+						int time = 0;
+						
+						@Override
+						public void run() {
+							time++;
+							damageSign.teleport(damageSign.getLocation().add(0,0.02,0));
+							
+							if(time >= 30) {
+								damageSign.remove();
+								this.cancel();
+							}
+						}
+					}.runTaskTimer(Main.getPlugin(Main.class), 0, 1);
+				}
+			}		 
+		} catch(Exception e) {
+			
+		}
+		
 	}
 	
 	@EventHandler
 	public void mobDeathEvent(EntityDeathEvent event) {
-		if(event.getEntity() instanceof EnderDragon) {
-			for (Player allPlayer : Bukkit.getOnlinePlayers()) {
-				allPlayer.sendMessage(ChatColor.GRAY + "[System] 추가 컨텐츠 개방을 축하드립니다! 마을에서 판매하고 있는 차원 이동서를 통해 새로운 세계로 갈 수 있게 되었습니다. 새로운 세계에서는 "
-						+ "기존과 다른 전투 시스템이 적용됩니다. 1. 레벨에 따른 추가 공격력 수치가 적용됩니다. 2. 플레이어는 서로 공격할 수 없습니다. 3. 위험구역에서는 몬스터가 주위에 계속 스폰됩니다. 4. 몬스터와 멀어지면 몬스터는 사라집니다.");
-			}
-		}
-		
 		try {
 			LivingEntity ent = event.getEntity();
 			Location loc = ent.getLocation();
 			if(ent.getWorld().getName().equals("sao")) {
 				event.getDrops().clear();
 				if(ent.getCustomName().equals(ChatColor.BOLD + "평범한 좀비")) {
-					event.setDroppedExp(2);
+					event.setDroppedExp(12);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.QUARTZ, rnd.nextInt(3)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "평범한 스켈이")) {
-					event.setDroppedExp(2);
+					event.setDroppedExp(12);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.ARROW, rnd.nextInt(3)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "나무꾼 좀비")) {
-					event.setDroppedExp(3);
+					event.setDroppedExp(18);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.OAK_LOG, rnd.nextInt(5)+5));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "검술을 배운 스켈이")) {
-					event.setDroppedExp(3);
+					event.setDroppedExp(18);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.IRON_INGOT, rnd.nextInt(3)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "파이어 좀비")) {
-					event.setDroppedExp(5);
+					event.setDroppedExp(30);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.REDSTONE, rnd.nextInt(5)+3));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.GUNPOWDER, rnd.nextInt(5)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "불의 요정")) {
-					event.setDroppedExp(5);
+					event.setDroppedExp(30);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.BLAZE_ROD, rnd.nextInt(3)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "늑대 거미")) {
-					event.setDroppedExp(8);
+					event.setDroppedExp(48);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.SPIDER_EYE, rnd.nextInt(3)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.STRING, rnd.nextInt(2)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "독거미")) {
-					event.setDroppedExp(8);
+					event.setDroppedExp(48);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.SPIDER_EYE, rnd.nextInt(5)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "나비")) {
-					event.setDroppedExp(10);
+					event.setDroppedExp(60);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.GOLD_INGOT, rnd.nextInt(3)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "고대 병기")) {
-					event.setDroppedExp(12);
+					event.setDroppedExp(72);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.IRON_INGOT, rnd.nextInt(3)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.NETHERITE_SCRAP, rnd.nextInt(2)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "불의 화신")) {
-					event.setDroppedExp(15);
+					event.setDroppedExp(90);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.BLAZE_ROD, rnd.nextInt(3)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.GOLD_INGOT, rnd.nextInt(3)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "검은 스켈이")) {
-					event.setDroppedExp(15);
+					event.setDroppedExp(90);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.WITHER_SKELETON_SKULL, rnd.nextInt(2)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.BONE, rnd.nextInt(4)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "유통기한 지난 돼지고기")) {
-					event.setDroppedExp(20);
+					event.setDroppedExp(120);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.PORKCHOP, rnd.nextInt(5)));
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.ENDER_PEARL, rnd.nextInt(2)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "바다 신전 보스")) {
-					event.setDroppedExp(25);
+					event.setDroppedExp(150);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.DIAMOND, rnd.nextInt(5)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "바다 신전 잡몹")) {
-					event.setDroppedExp(25);
+					event.setDroppedExp(150);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.DIAMOND, rnd.nextInt(3)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "포보르 추종자")) {
-					event.setDroppedExp(40);
+					event.setDroppedExp(240);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.EMERALD, rnd.nextInt(5)));
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "고오옴")) {
-					event.setDroppedExp(50);
+					event.setDroppedExp(300);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.NETHER_STAR, rnd.nextInt(2)));
 				}
 			}
@@ -1121,6 +1391,131 @@ public class Main extends JavaPlugin implements Listener{
 					}
 				}
 				
+			}
+		} catch(Exception e) {
+			
+		}
+		
+		try {
+			// 레이드 스크롤
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "고블린 소환 스크롤 [Lv.47]")) {
+				if(world == this.world) {
+					itemArg.remove();
+					Location loc = itemArg.getLocation();
+					
+					Zombie entity = (Zombie) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
+					
+					Location chestLoc = new Location(entity.getWorld(), 0, 100, 0);
+					Block block = chestLoc.getBlock();
+					Chest chest = (Chest) block.getState();
+					
+					entity.setCustomName(ChatColor.GRAY + "고블린" + ChatColor.YELLOW + " [Lv.47]");
+					entity.setCustomNameVisible(true);
+					entity.setMaxHealth(280);
+					entity.setHealth(280);
+					Zombie zombie = (Zombie) entity;
+					zombie.setBaby(false);
+					EntityEquipment weapon = entity.getEquipment();
+					ItemStack weaponItem = new ItemStack(Material.STONE_PICKAXE);
+					weapon.setItemInMainHand(weaponItem);
+					EntityEquipment head = entity.getEquipment();
+					ItemStack headItem = chest.getInventory().getItem(0);
+					head.setHelmet(headItem);
+					EntityEquipment chestplate = entity.getEquipment();
+					ItemStack chestplateItem = new ItemStack(Material.LEATHER_CHESTPLATE);
+					chestplate.setChestplate(chestplateItem);
+					EntityEquipment leggings = entity.getEquipment();
+					ItemStack leggingsItem = new ItemStack(Material.LEATHER_LEGGINGS);
+					leggings.setLeggings(leggingsItem);
+					EntityEquipment boots = entity.getEquipment();
+					ItemStack bootsItem = new ItemStack(Material.LEATHER_BOOTS);
+					boots.setBoots(bootsItem);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 8));
+				}
+			} else if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "오크 소환 스크롤 [Lv.60]")) {
+				if(world == this.world) {
+					itemArg.remove();
+					Location loc = itemArg.getLocation();
+					
+					Zombie entity = (Zombie) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
+					
+					Location chestLoc = new Location(entity.getWorld(), 0, 100, 0);
+					Block block = chestLoc.getBlock();
+					Chest chest = (Chest) block.getState();
+					
+					entity.setCustomName(ChatColor.GRAY + "오크" + ChatColor.YELLOW + " [Lv.60]");
+					entity.setCustomNameVisible(true);
+					entity.setMaxHealth(420);
+					entity.setHealth(420);
+					Zombie zombie = (Zombie) entity;
+					zombie.setBaby(false);
+					EntityEquipment weapon = entity.getEquipment();
+					ItemStack weaponItem = new ItemStack(Material.AIR);
+					weapon.setItemInMainHand(weaponItem);
+					EntityEquipment head = entity.getEquipment();
+					ItemStack headItem = chest.getInventory().getItem(1);
+					head.setHelmet(headItem);
+					EntityEquipment chestplate = entity.getEquipment();
+					ItemStack chestplateItem = new ItemStack(Material.LEATHER_CHESTPLATE);
+					LeatherArmorMeta chestmeta = (LeatherArmorMeta) chestplateItem.getItemMeta();
+					chestmeta.setColor(Color.fromRGB(10, 150, 10));
+					chestplateItem.setItemMeta(chestmeta);
+					chestplate.setChestplate(chestplateItem);
+					EntityEquipment leggings = entity.getEquipment();
+					ItemStack leggingsItem = new ItemStack(Material.LEATHER_LEGGINGS);
+					LeatherArmorMeta leggingsmeta = (LeatherArmorMeta) leggingsItem.getItemMeta();
+					leggingsmeta.setColor(Color.fromRGB(10, 150, 10));
+					leggingsItem.setItemMeta(leggingsmeta);
+					leggings.setLeggings(leggingsItem);
+					EntityEquipment boots = entity.getEquipment();
+					ItemStack bootsItem = new ItemStack(Material.LEATHER_BOOTS);
+					LeatherArmorMeta bootsmeta = (LeatherArmorMeta) bootsItem.getItemMeta();
+					bootsmeta.setColor(Color.fromRGB(10, 150, 10));
+					bootsItem.setItemMeta(bootsmeta);
+					boots.setBoots(bootsItem);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 17));
+				}
+			} else if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "외눈의 포보르 소환 스크롤 [Lv.83]")) {
+				if(world == this.world) {
+					itemArg.remove();
+					Location loc = itemArg.getLocation();
+					
+					WitherSkeleton entity = (WitherSkeleton) loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
+					
+					Location chestLoc = new Location(entity.getWorld(), 0, 100, 0);
+					Block block = chestLoc.getBlock();
+					Chest chest = (Chest) block.getState();
+					
+					entity.setCustomName(ChatColor.GRAY + "외눈의 포보르" + ChatColor.YELLOW + " [Lv.83]");
+					entity.setCustomNameVisible(true);
+					entity.setMaxHealth(1300);
+					entity.setHealth(1300);
+					EntityEquipment weapon = entity.getEquipment();
+					ItemStack weaponItem = new ItemStack(Material.LIME_WOOL);
+					weapon.setItemInMainHand(weaponItem);
+					EntityEquipment head = entity.getEquipment();
+					ItemStack headItem = chest.getInventory().getItem(2);
+					head.setHelmet(headItem);
+					EntityEquipment chestplate = entity.getEquipment();
+					ItemStack chestplateItem = new ItemStack(Material.LEATHER_CHESTPLATE);
+					LeatherArmorMeta chestmeta = (LeatherArmorMeta) chestplateItem.getItemMeta();
+					chestmeta.setColor(Color.fromRGB(0, 0, 0));
+					chestplateItem.setItemMeta(chestmeta);
+					chestplate.setChestplate(chestplateItem);
+					EntityEquipment leggings = entity.getEquipment();
+					ItemStack leggingsItem = new ItemStack(Material.LEATHER_LEGGINGS);
+					LeatherArmorMeta leggingsmeta = (LeatherArmorMeta) leggingsItem.getItemMeta();
+					leggingsmeta.setColor(Color.fromRGB(0, 0, 0));
+					leggingsItem.setItemMeta(leggingsmeta);
+					leggings.setLeggings(leggingsItem);
+					EntityEquipment boots = entity.getEquipment();
+					ItemStack bootsItem = new ItemStack(Material.LEATHER_BOOTS);
+					LeatherArmorMeta bootsmeta = (LeatherArmorMeta) bootsItem.getItemMeta();
+					bootsmeta.setColor(Color.fromRGB(0, 0, 0));
+					bootsItem.setItemMeta(bootsmeta);
+					boots.setBoots(bootsItem);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 30));
+				}
 			}
 		} catch(Exception e) {
 			

@@ -49,7 +49,7 @@ public class RefreshServer {
 				}
 				
 				if(time % 300 == 0) {
-					// º¸½ºÀü µ¥¹ÌÁö
+					// ì—˜ë“œë¦­ ì €ì£¼ ==> ìœ„ë”ì—ì„œ ê´€í†µ3ìœ¼ë¡œ ë³€ê²½
 					for(Player allPlayer : Bukkit.getOnlinePlayers()) {
 						Location loc = allPlayer.getLocation();
 						if(loc.getWorld() == Bukkit.getWorld("sao")) {
@@ -58,7 +58,7 @@ public class RefreshServer {
 								allPlayer.damage(5);
 								allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 0));
 								allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 100, 0));
-								allPlayer.sendMessage(ChatColor.RED + "ÀúÁÖ¿¡ °É·È½À´Ï´Ù.");
+								allPlayer.sendMessage(ChatColor.RED + "ì—˜ë“œë¦­ì˜ ì €ì£¼ì— ê±¸ë ¸ë‹¤.");
 							}
 						}
 					}

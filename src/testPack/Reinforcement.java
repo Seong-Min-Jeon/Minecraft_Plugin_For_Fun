@@ -262,16 +262,16 @@ public class Reinforcement {
 		//네더라이트
 		if(type == Material.NETHERITE_INGOT) {
 			int num = rnd.nextInt(percent);
-			if(num<5) {
+			if(num<12) {
 				int lvl = Integer.parseInt(stat);
-				item.setLocalizedName(Integer.toString(lvl+30));
-				player.sendMessage(ChatColor.GREEN + "방어력이 30만큼 상승하였습니다.");
+				item.setLocalizedName(Integer.toString(lvl+100));
+				player.sendMessage(ChatColor.GREEN + "방어력이 100만큼 상승하였습니다.");
 				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 0.3f, 2.0f);
-			} else if(num<7) {
+			} else if(num<13) {
 				int lvl = Integer.parseInt(stat);
-				if (lvl > 10) {
-					item.setLocalizedName(Integer.toString(lvl - 10));
-					player.sendMessage(ChatColor.WHITE + "방어력이 10만큼 감소하였습니다.");
+				if (lvl > 50) {
+					item.setLocalizedName(Integer.toString(lvl - 50));
+					player.sendMessage(ChatColor.WHITE + "방어력이 50만큼 감소하였습니다.");
 					player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.2f, 2.0f);
 				} else {
 					player.sendMessage(ChatColor.WHITE + "강화에 실패하였습니다.");
