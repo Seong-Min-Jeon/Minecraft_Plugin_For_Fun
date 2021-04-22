@@ -1099,7 +1099,7 @@ public class Main extends JavaPlugin implements Listener{
 				
 				int damage = (int)event.getFinalDamage();
 				
-				if(damage > 0 && !(event.getCause() == DamageCause.ENTITY_ATTACK) && !(event.getCause() == DamageCause.ENTITY_SWEEP_ATTACK)) {
+				if(damage > 0) {
 					ArmorStand damageSign = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().add(0,0.8,0), EntityType.ARMOR_STAND);
 					damageSign.setVisible(false);
 					damageSign.setSmall(true);
