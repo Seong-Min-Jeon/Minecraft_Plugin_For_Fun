@@ -39,7 +39,12 @@ public class ReinforcementMakeEvent {
             			player.sendMessage(ChatColor.WHITE + "광물은 5개 이상 넣어주세요.");
             		} else {
             			ItemStack itemStack = inv.getItem(0);
-            			Map<Enchantment, Integer> map = itemStack.getEnchantments();
+            			Map<Enchantment, Integer> map = null;
+            			try {
+            				map = itemStack.getEnchantments();
+            			} catch(Exception e) {
+            				
+            			}
             			ItemStack var1 = null;
             			try {
             				if(itemStack.getItemMeta() == null) {
@@ -103,7 +108,11 @@ public class ReinforcementMakeEvent {
                 			lore.add(ChatColor.BLUE + "공격력: " + newMeta.getLocalizedName());
                 			newMeta.setLore(lore);
         					itemStack.setItemMeta(newMeta);
-        					itemStack.addEnchantments(map);
+        					try {
+        						itemStack.addEnchantments(map);
+                			} catch(Exception e) {
+                				
+                			}
         					inv.setItem(0, itemStack);
                 			inv.getItem(1).setAmount(inv.getItem(1).getAmount() - 5);
         				} else {
@@ -129,7 +138,12 @@ public class ReinforcementMakeEvent {
             			player.sendMessage(ChatColor.WHITE + "광물은 5개 이상 넣어주세요.");
             		} else {
             			ItemStack itemStack = inv.getItem(0);
-            			Map<Enchantment, Integer> map = itemStack.getEnchantments();
+            			Map<Enchantment, Integer> map = null;
+            			try {
+            				map = itemStack.getEnchantments();
+            			} catch(Exception e) {
+            				
+            			}
             			ItemStack var1 = null;
             			try {
             				if(itemStack.getItemMeta() == null) {
@@ -193,7 +207,11 @@ public class ReinforcementMakeEvent {
                 			lore.add(ChatColor.BLUE + "방어력: " + newMeta.getLocalizedName());
                 			newMeta.setLore(lore);
         					itemStack.setItemMeta(newMeta);
-        					itemStack.addEnchantments(map);
+        					try {
+        						itemStack.addEnchantments(map);
+                			} catch(Exception e) {
+                				
+                			}
         					inv.setItem(0, itemStack);
                 			inv.getItem(1).setAmount(inv.getItem(1).getAmount() - 5);
         				} else {

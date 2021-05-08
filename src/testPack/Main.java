@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -75,6 +76,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -97,6 +99,46 @@ public class Main extends JavaPlugin implements Listener{
 	@Override
 	public void onEnable() {
 		this.getServer().getPluginManager().registerEvents(this, this);
+		
+		ItemStack item1 = new ItemStack(Material.NETHERITE_HELMET);
+		ItemMeta im1 = item1.getItemMeta();
+		im1.setDisplayName(ChatColor.GREEN + "자유로운 신념의 헬멧");
+		item1.setItemMeta(im1);
+		NamespacedKey item1Key = new NamespacedKey(this, "item1_key");
+		ShapelessRecipe item1Recipe = new ShapelessRecipe(item1Key, item1);
+		item1Recipe.addIngredient(8, Material.NETHERITE_INGOT);
+		item1Recipe.addIngredient(1, Material.NETHERITE_HELMET);
+		Bukkit.addRecipe(item1Recipe);
+		
+		ItemStack item2 = new ItemStack(Material.NETHERITE_CHESTPLATE);
+		ItemMeta im2 = item2.getItemMeta();
+		im2.setDisplayName(ChatColor.GREEN + "자유로운 신념의 갑옷");
+		item2.setItemMeta(im2);
+		NamespacedKey item2Key = new NamespacedKey(this, "item2_key");
+		ShapelessRecipe item2Recipe = new ShapelessRecipe(item2Key, item2);
+		item2Recipe.addIngredient(8, Material.NETHERITE_INGOT);
+		item2Recipe.addIngredient(1, Material.NETHERITE_CHESTPLATE);
+		Bukkit.addRecipe(item2Recipe);
+		
+		ItemStack item3 = new ItemStack(Material.NETHERITE_LEGGINGS);
+		ItemMeta im3 = item3.getItemMeta();
+		im3.setDisplayName(ChatColor.GREEN + "자유로운 신념의 갑옷");
+		item3.setItemMeta(im3);
+		NamespacedKey item3Key = new NamespacedKey(this, "item3_key");
+		ShapelessRecipe item3Recipe = new ShapelessRecipe(item3Key, item3);
+		item3Recipe.addIngredient(8, Material.NETHERITE_INGOT);
+		item3Recipe.addIngredient(1, Material.NETHERITE_LEGGINGS);
+		Bukkit.addRecipe(item3Recipe);
+		
+		ItemStack item4 = new ItemStack(Material.NETHERITE_BOOTS);
+		ItemMeta im4 = item4.getItemMeta();
+		im4.setDisplayName(ChatColor.GREEN + "자유로운 신념의 갑옷");
+		item4.setItemMeta(im4);
+		NamespacedKey item4Key = new NamespacedKey(this, "item4_key");
+		ShapelessRecipe item4Recipe = new ShapelessRecipe(item4Key, item4);
+		item4Recipe.addIngredient(8, Material.NETHERITE_INGOT);
+		item4Recipe.addIngredient(1, Material.NETHERITE_BOOTS);
+		Bukkit.addRecipe(item4Recipe);
 		
 		new RefreshServer();
 	}
@@ -122,20 +164,19 @@ public class Main extends JavaPlugin implements Listener{
 		Player player = event.getPlayer();
 		if(player.getWorld().getName().equalsIgnoreCase("sao")) {
 			event.setRespawnLocation(new Location(Bukkit.getWorld("sao"), -151, 66, -25));
-		} else {
-			player.setLevel(player.getLevel() / 2);
-		}
+		} 
 	}
 	
 	@EventHandler
 	public void playerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
 		if(player.getWorld() == sao) {
-			event.setDeathMessage(ChatColor.BOLD + "" + ChatColor.RED + player.getDisplayName() + "이 이세계에서 장렬한 전투 끝에 사망하였습니다.");
+			event.setDeathMessage(ChatColor.BOLD + "" + ChatColor.RED + player.getDisplayName() + "이/가 이세계에서 장렬한 전투 끝에 사망하였습니다.");
 			event.setKeepInventory(true);
 			event.setKeepLevel(true);
 		} else {
 			event.setKeepInventory(true);
+			event.setKeepLevel(true);
 		}
 	}
 	
@@ -181,6 +222,12 @@ public class Main extends JavaPlugin implements Listener{
 		if(player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "힐링 포션X")) {
 			event.setCancelled(true);
 			return;
+		}
+		if(player.getInventory().getItemInMainHand().getType() == Material.CHORUS_FRUIT) {
+			if(player.getWorld() == sao) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 
@@ -291,6 +338,11 @@ public class Main extends JavaPlugin implements Listener{
 	public void spawnEntity(CreatureSpawnEvent event) {
 		LivingEntity entity = event.getEntity();
 		if(entity.getWorld().getName().equalsIgnoreCase("sao")) {
+			
+			if(event.getEntityType() == EntityType.ENDER_PEARL) {
+				event.setCancelled(true);
+				return;
+			}
 			
 			entity.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, Integer.MAX_VALUE, 1));
 			
@@ -420,6 +472,8 @@ public class Main extends JavaPlugin implements Listener{
 					EntityEquipment boots = entity.getEquipment();
 					ItemStack bootsItem = new ItemStack(Material.AIR);
 					boots.setBoots(bootsItem);
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -472,6 +526,8 @@ public class Main extends JavaPlugin implements Listener{
 					ItemStack bootsItem = new ItemStack(Material.IRON_BOOTS);
 					boots.setBoots(bootsItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 3));
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -521,6 +577,8 @@ public class Main extends JavaPlugin implements Listener{
 					entity.setCustomNameVisible(true);
 					entity.setMaxHealth(70);
 					entity.setHealth(70);
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -541,6 +599,8 @@ public class Main extends JavaPlugin implements Listener{
 					entity.setMaxHealth(100);
 					entity.setHealth(100);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 7));
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -556,7 +616,17 @@ public class Main extends JavaPlugin implements Listener{
 					entity.setHealth(150);
 					PolarBear zombie = (PolarBear) entity;
 					zombie.setAdult();
+					List<Entity> entitylist = zombie.getNearbyEntities(10, 10, 10);	
+					for (Entity nearEntity : entitylist) {
+						if (nearEntity.getType() == EntityType.PLAYER) {
+							Player p = (Player) nearEntity;
+							zombie.setTarget(p);
+							break;
+						}
+					}
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 8));
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -568,9 +638,20 @@ public class Main extends JavaPlugin implements Listener{
 				if (entity.getType() == (EntityType) EntityType.IRON_GOLEM) {
 					entity.setCustomName(ChatColor.BOLD + "고대 병기");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(180);
-					entity.setHealth(180);
+					entity.setMaxHealth(200);
+					entity.setHealth(200);
+					IronGolem zombie = (IronGolem) entity;
+					List<Entity> entitylist = zombie.getNearbyEntities(10, 10, 10);	
+					for (Entity nearEntity : entitylist) {
+						if (nearEntity.getType() == EntityType.PLAYER) {
+							Player p = (Player) nearEntity;
+							zombie.setTarget(p);
+							break;
+						}
+					}
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -582,13 +663,13 @@ public class Main extends JavaPlugin implements Listener{
 				if (entity.getType() == (EntityType) EntityType.BLAZE) {
 					entity.setCustomName(ChatColor.BOLD + "불의 화신");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(220);
-					entity.setHealth(220);
+					entity.setMaxHealth(300);
+					entity.setHealth(300);
 				} else if (entity.getType() == (EntityType) EntityType.WITHER_SKELETON) {
 					entity.setCustomName(ChatColor.BOLD + "검은 스켈이");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(220);
-					entity.setHealth(220);
+					entity.setMaxHealth(350);
+					entity.setHealth(350);
 					EntityEquipment weapon = entity.getEquipment();
 					ItemStack weaponItem = new ItemStack(Material.NETHERITE_SWORD);
 					weapon.setItemInMainHand(weaponItem);
@@ -604,8 +685,10 @@ public class Main extends JavaPlugin implements Listener{
 					EntityEquipment boots = entity.getEquipment();
 					ItemStack bootsItem = new ItemStack(Material.AIR);
 					boots.setBoots(bootsItem);
-					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 12));
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 20));
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -617,9 +700,11 @@ public class Main extends JavaPlugin implements Listener{
 				if (entity.getType() == (EntityType) EntityType.ZOGLIN) {
 					entity.setCustomName(ChatColor.BOLD + "유통기한 지난 돼지고기");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(250);
-					entity.setHealth(250);
-					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 13));
+					entity.setMaxHealth(500);
+					entity.setHealth(500);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 30));
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -631,13 +716,15 @@ public class Main extends JavaPlugin implements Listener{
 				if (entity.getType() == (EntityType) EntityType.ELDER_GUARDIAN) {
 					entity.setCustomName(ChatColor.BOLD + "바다 신전 보스");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(300);
-					entity.setHealth(300);
+					entity.setMaxHealth(700);
+					entity.setHealth(700);
 				} else if (entity.getType() == (EntityType) EntityType.GUARDIAN) {
 					entity.setCustomName(ChatColor.BOLD + "바다 신전 잡몹");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(280);
-					entity.setHealth(280);
+					entity.setMaxHealth(800);
+					entity.setHealth(800);
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -649,30 +736,32 @@ public class Main extends JavaPlugin implements Listener{
 				if (entity.getType() == (EntityType) EntityType.VINDICATOR) {
 					entity.setCustomName(ChatColor.BOLD + "포보르 추종자");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(350);
-					entity.setHealth(350);
+					entity.setMaxHealth(1000);
+					entity.setHealth(1000);
 					EntityEquipment head = entity.getEquipment();
 					ItemStack headItem = new ItemStack(Material.AIR);
 					head.setHelmet(headItem);
-					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 15));
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 50));
 				} else if (entity.getType() == (EntityType) EntityType.EVOKER) {
 					entity.setCustomName(ChatColor.BOLD + "포보르 추종자");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(350);
-					entity.setHealth(350);
-					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 15));
+					entity.setMaxHealth(1200);
+					entity.setHealth(1200);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 60));
 				} else if (entity.getType() == (EntityType) EntityType.ILLUSIONER) {
 					entity.setCustomName(ChatColor.BOLD + "포보르 추종자");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(350);
-					entity.setHealth(350);
-					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 15));
+					entity.setMaxHealth(1500);
+					entity.setHealth(1500);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 70));
 				} else if (entity.getType() == (EntityType) EntityType.RAVAGER) {
 					entity.setCustomName(ChatColor.BOLD + "고오옴");
 					entity.setCustomNameVisible(true);
-					entity.setMaxHealth(350);
-					entity.setHealth(350);
-					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 15));
+					entity.setMaxHealth(3000);
+					entity.setHealth(3000);
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 100));
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
+					
 				} else {
 					event.setCancelled(true);
 				}
@@ -687,20 +776,24 @@ public class Main extends JavaPlugin implements Listener{
 		try {
 			if(event.getDamager() instanceof Player) {
 				Player player = (Player) event.getDamager();
-				event.setDamage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.1 + event.getDamage());
-				
-				List<Entity> entitylist = player.getNearbyEntities(5, 5, 5);	
-				for (Entity nearEntity : entitylist) {
-					if (nearEntity.getType() != EntityType.PLAYER) {
-						if (nearEntity instanceof LivingEntity) {
-							if(nearEntity == event.getEntity()) {
-								continue;
+				ItemStack item = player.getInventory().getItemInMainHand();
+				if(item.getType() != Material.BOW && item.getType() != Material.TRIDENT && item.getType() != Material.CROSSBOW) {
+					
+					event.setDamage((Integer.parseInt(item.getItemMeta().getLocalizedName())) * 0.1 + event.getDamage());
+					
+					List<Entity> entitylist = player.getNearbyEntities(5, 5, 5);	
+					for (Entity nearEntity : entitylist) {
+						if (nearEntity.getType() != EntityType.PLAYER) {
+							if (nearEntity instanceof LivingEntity) {
+								if(nearEntity == event.getEntity()) {
+									continue;
+								}
+								((LivingEntity) nearEntity).damage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.07);
 							}
-							((LivingEntity) nearEntity).damage((Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLocalizedName())) * 0.07);
 						}
 					}
+					
 				}
-				
 			}
 		} catch(Exception e) {
 			
@@ -729,6 +822,68 @@ public class Main extends JavaPlugin implements Listener{
 		} catch(Exception e) {
 			
 		}
+		
+		try {
+			Entity mob = event.getEntity();
+			if (mob.getCustomName().substring(2).equalsIgnoreCase("고블린" + ChatColor.YELLOW + " [Lv.47]")) {
+
+				if(event.getDamager() instanceof Player) {
+					Player player = (Player) event.getDamager();
+					new BossHealth().getBar1().addPlayer(player);
+				} else if(event.getDamager() instanceof Arrow) {
+					Arrow arrow = (Arrow) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar1().addPlayer(player);
+					}
+				} else if(event.getDamager() instanceof Trident) {
+					Trident arrow = (Trident) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar1().addPlayer(player);
+					}
+				}
+			} else if (mob.getCustomName().substring(2).equalsIgnoreCase("오크" + ChatColor.YELLOW + " [Lv.60]")) {
+
+				if(event.getDamager() instanceof Player) {
+					Player player = (Player) event.getDamager();
+					new BossHealth().getBar2().addPlayer(player);
+				} else if(event.getDamager() instanceof Arrow) {
+					Arrow arrow = (Arrow) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar2().addPlayer(player);
+					}
+				} else if(event.getDamager() instanceof Trident) {
+					Trident arrow = (Trident) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar2().addPlayer(player);
+					}
+				}
+			} else if (mob.getCustomName().substring(2).equalsIgnoreCase("외눈의 포보르" + ChatColor.YELLOW + " [Lv.83]")) {
+
+				if(event.getDamager() instanceof Player) {
+					Player player = (Player) event.getDamager();
+					new BossHealth().getBar3().addPlayer(player);
+				} else if(event.getDamager() instanceof Arrow) {
+					Arrow arrow = (Arrow) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar3().addPlayer(player);
+					}
+				} else if(event.getDamager() instanceof Trident) {
+					Trident arrow = (Trident) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar3().addPlayer(player);
+					}
+				}
+			}
+		} catch(Exception e) {
+			
+		}
+		
 		// 기타
 		try {
 			if(event.getEntity().getWorld().getName().equals("sao")) {
@@ -905,6 +1060,147 @@ public class Main extends JavaPlugin implements Listener{
 		} catch(Exception e) {
 			
 		}
+		// 데미지 표기
+		try {
+			if (event.getEntity() instanceof Mob) {
+				Entity entity = event.getEntity();
+
+				int damage = (int) event.getDamage();
+
+				if (damage > 0) {
+					ArmorStand damageSign = (ArmorStand) entity.getWorld()
+							.spawnEntity(entity.getLocation().add(0, 0.8, 0), EntityType.ARMOR_STAND);
+					damageSign.setVisible(false);
+					damageSign.setSmall(true);
+
+					if (damage < 1) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#808080")
+								+ Integer.toString(damage));
+					} else if (damage < 2) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#B4B4B4")
+								+ Integer.toString(damage));
+					} else if (damage < 3) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#E5E5E5")
+								+ Integer.toString(damage));
+					} else if (damage < 4) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#EFEFEF")
+								+ Integer.toString(damage));
+					} else if (damage < 5) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#FFFFFF")
+								+ Integer.toString(damage));
+					} else if (damage < 6) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#f2ffeb")
+								+ Integer.toString(damage));
+					} else if (damage < 7) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#e0ffcf")
+								+ Integer.toString(damage));
+					} else if (damage < 8) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ccffb0")
+								+ Integer.toString(damage));
+					} else if (damage < 9) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#b3ff8a")
+								+ Integer.toString(damage));
+					} else if (damage < 10) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#9dff69")
+								+ Integer.toString(damage));
+					} else if (damage < 20) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#7fff3b")
+								+ Integer.toString(damage));
+					} else if (damage < 30) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#1aff00")
+								+ Integer.toString(damage));
+					} else if (damage < 40) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00ff77")
+								+ Integer.toString(damage));
+					} else if (damage < 50) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00ffc3")
+								+ Integer.toString(damage));
+					} else if (damage < 60) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00fff7")
+								+ Integer.toString(damage));
+					} else if (damage < 70) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00d0ff")
+								+ Integer.toString(damage));
+					} else if (damage < 80) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00aeff")
+								+ Integer.toString(damage));
+					} else if (damage < 90) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#008cff")
+								+ Integer.toString(damage));
+					} else if (damage < 100) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#0062ff")
+								+ Integer.toString(damage));
+					} else if (damage < 200) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#002aff")
+								+ Integer.toString(damage));
+					} else if (damage < 300) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#3c00ff")
+								+ Integer.toString(damage));
+					} else if (damage < 400) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#8c00ff")
+								+ Integer.toString(damage));
+					} else if (damage < 500) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#c300ff")
+								+ Integer.toString(damage));
+					} else if (damage < 600) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff00f7")
+								+ Integer.toString(damage));
+					} else if (damage < 700) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff00b3")
+								+ Integer.toString(damage));
+					} else if (damage < 800) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0080")
+								+ Integer.toString(damage));
+					} else if (damage < 900) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0048")
+								+ Integer.toString(damage));
+					} else if (damage < 1000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0000")
+								+ Integer.toString(damage));
+					} else if (damage < 2000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ab0000")
+								+ Integer.toString(damage));
+					} else if (damage < 3000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#630000")
+								+ Integer.toString(damage));
+					} else if (damage < 4000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#8f0062")
+								+ Integer.toString(damage));
+					} else if (damage < 5000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#70008f")
+								+ Integer.toString(damage));
+					} else if (damage < 6000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#420054")
+								+ Integer.toString(damage));
+					} else if (damage < 100000) {
+						damageSign.setCustomName(ChatColor.BOLD + "" + ChatColor.MAGIC + Integer.toString(damage));
+					} else {
+						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ffffff")
+								+ Integer.toString(damage));
+					}
+					damageSign.setCustomNameVisible(true);
+					damageSign.setGravity(false);
+					damageSign.setRemoveWhenFarAway(true);
+
+					new BukkitRunnable() {
+						int time = 0;
+
+						@Override
+						public void run() {
+							time++;
+							damageSign.teleport(damageSign.getLocation().add(0, 0.02, 0));
+
+							if (time >= 30) {
+								damageSign.remove();
+								this.cancel();
+							}
+						}
+					}.runTaskTimer(Main.getPlugin(Main.class), 0, 1);
+				}
+			}
+		} catch (Exception e) {
+
+		}
 	}
 	
 	@EventHandler
@@ -940,7 +1236,6 @@ public class Main extends JavaPlugin implements Listener{
 		
 		if(event.getDamage() <= 0) {
 			event.setCancelled(true);
-			return;
 		}
 		
 		//몹 스킬 트리거
@@ -969,7 +1264,6 @@ public class Main extends JavaPlugin implements Listener{
 		try {
 			if(event.getEntity() instanceof Giant) {
 				event.setCancelled(true);
-				((LivingEntity) event.getEntity()).damage(event.getFinalDamage());
 				
 				int num = rnd.nextInt(15);
 				if(num == 0) {
@@ -1053,7 +1347,7 @@ public class Main extends JavaPlugin implements Listener{
 			}
 			
 			if(event.getEntity() instanceof Giant) {
-				bar.setProgress(((LivingEntity) event.getEntity()).getHealth() / 30000.0);
+				bar.setProgress(((LivingEntity) event.getEntity()).getHealth() / 200000.0);
 				if(((LivingEntity) event.getEntity()).getHealth() <= 0) {
 					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
 						allPlayer.sendMessage("이세계를 위협하던 보스가 소멸하였습니다.");
@@ -1067,14 +1361,12 @@ public class Main extends JavaPlugin implements Listener{
 					}
 				}
 			}
-			
 		}
 		
 		try {
 			if(!(event.getEntity() instanceof Player)) {
 				Entity mob = event.getEntity();
-				// 코낭그
-				if (mob.getCustomName().substring(2).equalsIgnoreCase("코낭그" + ChatColor.YELLOW + " [Lv.??]")) {
+				if (mob.getCustomName().substring(2).equalsIgnoreCase("고블린" + ChatColor.YELLOW + " [Lv.47]")) {
 
 					LivingEntity boss = (LivingEntity) mob;
 					
@@ -1084,117 +1376,37 @@ public class Main extends JavaPlugin implements Listener{
 							new BossHealth().getBar1().removePlayer(p);
 						}
 					} else {
-						new BossHealth().getBar1().setProgress((boss.getHealth()-event.getFinalDamage()) / 700000.0);
+						new BossHealth().getBar1().setProgress((boss.getHealth()-event.getFinalDamage()) / 280.0);
+					}
+					
+				}
+				if (mob.getCustomName().substring(2).equalsIgnoreCase("오크" + ChatColor.YELLOW + " [Lv.60]")) {
+
+					LivingEntity boss = (LivingEntity) mob;
+					
+					if(boss.getHealth() - event.getFinalDamage() <= 0) {
+						for(Player p : new BossHealth().getBar2().getPlayers()) {
+							new BossHealth().getBar2().setProgress(0);
+							new BossHealth().getBar2().removePlayer(p);
+						}
+					} else {
+						new BossHealth().getBar2().setProgress((boss.getHealth()-event.getFinalDamage()) / 420.0);
+					}
+				}
+				if (mob.getCustomName().substring(2).equalsIgnoreCase("외눈의 포보르" + ChatColor.YELLOW + " [Lv.83]")) {
+
+					LivingEntity boss = (LivingEntity) mob;
+					
+					if(boss.getHealth() - event.getFinalDamage() <= 0) {
+						for(Player p : new BossHealth().getBar3().getPlayers()) {
+							new BossHealth().getBar3().setProgress(0);
+							new BossHealth().getBar3().removePlayer(p);
+						}
+					} else {
+						new BossHealth().getBar3().setProgress((boss.getHealth()-event.getFinalDamage()) / 1300.0);
 					}
 				}
 			}
-		} catch(Exception e) {
-			
-		}
-		
-		// 데미지 표기
-		try {
-			if(event.getEntity() instanceof Mob) {
-				Entity entity = event.getEntity();
-				
-				int damage = (int)event.getFinalDamage();
-				
-				if(damage > 0) {
-					ArmorStand damageSign = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().add(0,0.8,0), EntityType.ARMOR_STAND);
-					damageSign.setVisible(false);
-					damageSign.setSmall(true);
-					
-					if(damage < 1) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#808080") + Integer.toString(damage));
-					} else if(damage < 2) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#B4B4B4") + Integer.toString(damage));
-					} else if(damage < 3) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#E5E5E5") + Integer.toString(damage));
-					} else if(damage < 4) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#EFEFEF") + Integer.toString(damage));
-					} else if(damage < 5) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#FFFFFF") + Integer.toString(damage));
-					} else if(damage < 6) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#f2ffeb") + Integer.toString(damage));
-					} else if(damage < 7) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#e0ffcf") + Integer.toString(damage));
-					} else if(damage < 8) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ccffb0") + Integer.toString(damage));
-					} else if(damage < 9) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#b3ff8a") + Integer.toString(damage));
-					} else if(damage < 10) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#9dff69") + Integer.toString(damage));
-					} else if(damage < 20) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#7fff3b") + Integer.toString(damage));
-					} else if(damage < 30) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#1aff00") + Integer.toString(damage));
-					} else if(damage < 40) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00ff77") + Integer.toString(damage));
-					} else if(damage < 50) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00ffc3") + Integer.toString(damage));
-					} else if(damage < 60) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00fff7") + Integer.toString(damage));
-					} else if(damage < 70) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00d0ff") + Integer.toString(damage));
-					} else if(damage < 80) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#00aeff") + Integer.toString(damage));
-					} else if(damage < 90) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#008cff") + Integer.toString(damage));
-					} else if(damage < 100) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#0062ff") + Integer.toString(damage));
-					} else if(damage < 200) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#002aff") + Integer.toString(damage));
-					} else if(damage < 300) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#3c00ff") + Integer.toString(damage));
-					} else if(damage < 400) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#8c00ff") + Integer.toString(damage));
-					} else if(damage < 500) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#c300ff") + Integer.toString(damage));
-					} else if(damage < 600) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff00f7") + Integer.toString(damage));
-					} else if(damage < 700) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff00b3") + Integer.toString(damage));
-					} else if(damage < 800) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0080") + Integer.toString(damage));
-					} else if(damage < 900) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0048") + Integer.toString(damage));
-					} else if(damage < 1000) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ff0000") + Integer.toString(damage));
-					} else if(damage < 2000) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ab0000") + Integer.toString(damage));
-					} else if(damage < 3000) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#630000") + Integer.toString(damage));
-					} else if(damage < 4000) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#8f0062") + Integer.toString(damage));
-					} else if(damage < 5000) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#70008f") + Integer.toString(damage));
-					} else if(damage < 6000) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#420054") + Integer.toString(damage));
-					} else if(damage < 100000) {
-						damageSign.setCustomName(ChatColor.BOLD + "" + ChatColor.MAGIC + Integer.toString(damage));
-					} else {
-						damageSign.setCustomName(ChatColor.BOLD + "" + net.md_5.bungee.api.ChatColor.of("#ffffff") + Integer.toString(damage));
-					}
-					damageSign.setCustomNameVisible(true);
-					damageSign.setGravity(false);
-					damageSign.setRemoveWhenFarAway(true);
-					
-					new BukkitRunnable() {
-						int time = 0;
-						
-						@Override
-						public void run() {
-							time++;
-							damageSign.teleport(damageSign.getLocation().add(0,0.02,0));
-							
-							if(time >= 30) {
-								damageSign.remove();
-								this.cancel();
-							}
-						}
-					}.runTaskTimer(Main.getPlugin(Main.class), 0, 1);
-				}
-			}		 
 		} catch(Exception e) {
 			
 		}
@@ -1266,6 +1478,16 @@ public class Main extends JavaPlugin implements Listener{
 					event.setDroppedExp(300);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.NETHER_STAR, rnd.nextInt(2)));
 				}
+			}
+			if(ent.getCustomName().equals(ChatColor.BOLD + "고블린" + ChatColor.YELLOW + " [Lv.47]")) {
+				event.setDroppedExp(500);
+				world.dropItem(loc, new ItemStack(Material.COAL, 64));
+			} else if(ent.getCustomName().equals(ChatColor.BOLD + "오크" + ChatColor.YELLOW + " [Lv.60]")) {
+				event.setDroppedExp(1000);
+				world.dropItem(loc, new ItemStack(Material.DIAMOND, 10));
+			} else if(ent.getCustomName().equals(ChatColor.BOLD + "외눈의 포보르" + ChatColor.YELLOW + " [Lv.83]")) {
+				event.setDroppedExp(3000);
+				world.dropItem(loc, new ItemStack(Material.NETHERITE_SCRAP, 1));
 			}
 		} catch(Exception e) {
 			
@@ -1374,13 +1596,13 @@ public class Main extends JavaPlugin implements Listener{
 								}
 							}
 							
-							Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 202, 7), EntityType.GIANT);
+							Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 205, 7), EntityType.GIANT);
 							g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
 							g.setAI(false);
-							g.setMaxHealth(30000);
-							g.setHealth(30000);
+							g.setMaxHealth(200000);
+							g.setHealth(200000);
 							
-							bar.setProgress(g.getHealth() / 30000.0);
+							bar.setProgress(g.getHealth() / 200000.0);
 							for(Player p : Bukkit.getOnlinePlayers()) {
 								if(p.getWorld() == sao) {
 									bar.addPlayer(p);
@@ -1409,8 +1631,9 @@ public class Main extends JavaPlugin implements Listener{
 					Block block = chestLoc.getBlock();
 					Chest chest = (Chest) block.getState();
 					
-					entity.setCustomName(ChatColor.GRAY + "고블린" + ChatColor.YELLOW + " [Lv.47]");
+					entity.setCustomName(ChatColor.BOLD + "고블린" + ChatColor.YELLOW + " [Lv.47]");
 					entity.setCustomNameVisible(true);
+					entity.setRemoveWhenFarAway(false);
 					entity.setMaxHealth(280);
 					entity.setHealth(280);
 					Zombie zombie = (Zombie) entity;
@@ -1431,6 +1654,13 @@ public class Main extends JavaPlugin implements Listener{
 					ItemStack bootsItem = new ItemStack(Material.LEATHER_BOOTS);
 					boots.setBoots(bootsItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 8));
+					
+					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "이세계의 고블린이 찾아왔습니다.");
+						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "좌표: " + (int)(loc.getX()) + " " +  + (int)(loc.getY()) + " "  + (int)(loc.getZ()));
+						new BossHealth().getBar1().setProgress(1.0);
+						new BossHealth().getBar1().addPlayer(player);
+					}
 				}
 			} else if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "오크 소환 스크롤 [Lv.60]")) {
 				if(world == this.world) {
@@ -1443,8 +1673,9 @@ public class Main extends JavaPlugin implements Listener{
 					Block block = chestLoc.getBlock();
 					Chest chest = (Chest) block.getState();
 					
-					entity.setCustomName(ChatColor.GRAY + "오크" + ChatColor.YELLOW + " [Lv.60]");
+					entity.setCustomName(ChatColor.BOLD + "오크" + ChatColor.YELLOW + " [Lv.60]");
 					entity.setCustomNameVisible(true);
+					entity.setRemoveWhenFarAway(false);
 					entity.setMaxHealth(420);
 					entity.setHealth(420);
 					Zombie zombie = (Zombie) entity;
@@ -1474,6 +1705,13 @@ public class Main extends JavaPlugin implements Listener{
 					bootsItem.setItemMeta(bootsmeta);
 					boots.setBoots(bootsItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 17));
+					
+					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "이세계의 오크가 찾아왔습니다.");
+						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "좌표: " + (int)(loc.getX()) + " " +  + (int)(loc.getY()) + " "  + (int)(loc.getZ()));
+						new BossHealth().getBar2().setProgress(1.0);
+						new BossHealth().getBar2().addPlayer(player);
+					}
 				}
 			} else if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "외눈의 포보르 소환 스크롤 [Lv.83]")) {
 				if(world == this.world) {
@@ -1486,12 +1724,13 @@ public class Main extends JavaPlugin implements Listener{
 					Block block = chestLoc.getBlock();
 					Chest chest = (Chest) block.getState();
 					
-					entity.setCustomName(ChatColor.GRAY + "외눈의 포보르" + ChatColor.YELLOW + " [Lv.83]");
+					entity.setCustomName(ChatColor.BOLD + "외눈의 포보르" + ChatColor.YELLOW + " [Lv.83]");
 					entity.setCustomNameVisible(true);
+					entity.setRemoveWhenFarAway(false);
 					entity.setMaxHealth(1300);
 					entity.setHealth(1300);
 					EntityEquipment weapon = entity.getEquipment();
-					ItemStack weaponItem = new ItemStack(Material.LIME_WOOL);
+					ItemStack weaponItem = new ItemStack(Material.NETHERITE_AXE);
 					weapon.setItemInMainHand(weaponItem);
 					EntityEquipment head = entity.getEquipment();
 					ItemStack headItem = chest.getInventory().getItem(2);
@@ -1515,6 +1754,13 @@ public class Main extends JavaPlugin implements Listener{
 					bootsItem.setItemMeta(bootsmeta);
 					boots.setBoots(bootsItem);
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 30));
+					
+					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "이세계의 외눈의 포보르가 찾아왔습니다.");
+						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "좌표: " + (int)(loc.getX()) + " " +  + (int)(loc.getY()) + " "  + (int)(loc.getZ()));
+						new BossHealth().getBar3().setProgress(1.0);
+						new BossHealth().getBar3().addPlayer(player);
+					}
 				}
 			}
 		} catch(Exception e) {

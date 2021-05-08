@@ -102,7 +102,7 @@ public class PlayerHitDebuff {
 			if (num == 0) {
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 1, true, false, false));
 				player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 9, true, false, false));
-				player.damage(20);
+				player.damage(40);
 			}
 		}
 	}
@@ -117,10 +117,10 @@ public class PlayerHitDebuff {
 			    }
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 1, true, false, false));
 				player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 9, true, false, false));
-				player.damage(20);
+				player.damage(50);
 			} else if(num == 1) {
 				player.setVelocity(new Vector(0, 3, 0));
-				player.damage(30);
+				player.damage(100);
 			}
 		}
 	}
