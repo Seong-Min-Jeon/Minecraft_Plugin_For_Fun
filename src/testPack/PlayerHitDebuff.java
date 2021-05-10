@@ -57,7 +57,7 @@ public class PlayerHitDebuff {
 
 	// 유통기한 지난 돼지고기
 	public void mob1(Player player, Entity mob) {
-		if (mob.getCustomName().substring(2).equalsIgnoreCase(ChatColor.BOLD + "유통기한 지난 돼지고기")) {
+		if (mob.getCustomName().equalsIgnoreCase(ChatColor.BOLD + "유통기한 지난 돼지고기")) {
 			int num = rnd.nextInt(5);
 			if (num == 0) {
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 1, true, false, false));
@@ -69,10 +69,10 @@ public class PlayerHitDebuff {
 	
 	// 바다 신전 보스
 	public void mob2(Player player, Entity mob) {
-		if (mob.getCustomName().substring(2).equalsIgnoreCase(ChatColor.BOLD + "바다 신전 보스")) {
+		if (mob.getCustomName().equalsIgnoreCase(ChatColor.BOLD + "바다 신전 보스")) {
 			int num = rnd.nextInt(3);
 			if (num == 0) {
-				if(player.getHealth() < 16) {
+				if(player.getHealth() <= 4) {
 					player.setHealth(0);
 				} else {
 					player.setHealth(player.getHealth() - 4);
@@ -83,10 +83,10 @@ public class PlayerHitDebuff {
 
 	// 바다 신전 잡몹
 	public void mob3(Player player, Entity mob) {
-		if (mob.getCustomName().substring(2).equalsIgnoreCase(ChatColor.BOLD + "바다 신전 잡몹")) {
+		if (mob.getCustomName().equalsIgnoreCase(ChatColor.BOLD + "바다 신전 잡몹")) {
 			int num = rnd.nextInt(3);
 			if (num == 0) {
-				if(player.getHealth() < 18) {
+				if(player.getHealth() <= 2) {
 					player.setHealth(0);
 				} else {
 					player.setHealth(player.getHealth() - 2);
@@ -97,7 +97,7 @@ public class PlayerHitDebuff {
 
 	// 포보르 추종자
 	public void mob4(Player player, Entity mob) {
-		if (mob.getCustomName().substring(2).equalsIgnoreCase(ChatColor.BOLD + "포보르 추종자")) {
+		if (mob.getCustomName().equalsIgnoreCase(ChatColor.BOLD + "포보르 추종자")) {
 			int num = rnd.nextInt(5);
 			if (num == 0) {
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 1, true, false, false));
@@ -109,7 +109,7 @@ public class PlayerHitDebuff {
 
 	// 고오옴
 	public void mob5(Player player, Entity mob) {
-		if (mob.getCustomName().substring(2).equalsIgnoreCase(ChatColor.BOLD + "고오옴")) {
+		if (mob.getCustomName().equalsIgnoreCase(ChatColor.BOLD + "고오옴")) {
 			int num = rnd.nextInt(8);
 			if (num == 0) {
 				for(PotionEffect effect : player.getActivePotionEffects ()){

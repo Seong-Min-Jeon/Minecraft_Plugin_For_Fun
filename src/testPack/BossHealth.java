@@ -9,9 +9,14 @@ import org.bukkit.entity.Player;
 
 public class BossHealth {
 
+	private static BossBar bar0 = Bukkit.createBossBar(ChatColor.DARK_RED + "THE EYE", BarColor.RED, BarStyle.SOLID);
 	private static BossBar bar1 = Bukkit.createBossBar(ChatColor.DARK_RED + "고블린", BarColor.RED, BarStyle.SOLID);
 	private static BossBar bar2 = Bukkit.createBossBar(ChatColor.DARK_RED + "오크", BarColor.RED, BarStyle.SOLID);
 	private static BossBar bar3 = Bukkit.createBossBar(ChatColor.DARK_RED + "외눈의 포보르", BarColor.RED, BarStyle.SOLID);
+	
+	public BossBar getBar0() {
+		return bar0;
+	}
 	
 	public BossBar getBar1() {
 		return bar1;
@@ -26,7 +31,9 @@ public class BossHealth {
 	}
 	
 	public void removePlayer(Player player) {
-		if(bar1.getPlayers().contains(player)) { 
+		if(bar0.getPlayers().contains(player)) { 
+			bar0.removePlayer(player);
+		} else if(bar1.getPlayers().contains(player)) { 
 			bar1.removePlayer(player);
 		} else if(bar2.getPlayers().contains(player)) { 
 			bar2.removePlayer(player);

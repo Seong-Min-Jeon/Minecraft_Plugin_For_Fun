@@ -100,6 +100,8 @@ public class Main extends JavaPlugin implements Listener{
 	public void onEnable() {
 		this.getServer().getPluginManager().registerEvents(this, this);
 		
+		bar.setVisible(true);
+		
 		ItemStack item1 = new ItemStack(Material.NETHERITE_HELMET);
 		ItemMeta im1 = item1.getItemMeta();
 		im1.setDisplayName(ChatColor.GREEN + "자유로운 신념의 헬멧");
@@ -419,6 +421,8 @@ public class Main extends JavaPlugin implements Listener{
 			if (loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
 					&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
 				if(event.getEntity() instanceof Giant) {
+					
+				} else if (entity.getType() == (EntityType) EntityType.ARMOR_STAND) {
 					
 				} else {
 					event.setCancelled(true);
@@ -825,7 +829,24 @@ public class Main extends JavaPlugin implements Listener{
 		
 		try {
 			Entity mob = event.getEntity();
-			if (mob.getCustomName().substring(2).equalsIgnoreCase("고블린" + ChatColor.YELLOW + " [Lv.47]")) {
+			if (mob.getType() == EntityType.GIANT) {
+				if(event.getDamager() instanceof Player) {
+					Player player = (Player) event.getDamager();
+					new BossHealth().getBar0().addPlayer(player);
+				} else if(event.getDamager() instanceof Arrow) {
+					Arrow arrow = (Arrow) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar0().addPlayer(player);
+					}
+				} else if(event.getDamager() instanceof Trident) {
+					Trident arrow = (Trident) event.getDamager();
+					if(arrow.getShooter() instanceof Player) {
+						Player player = (Player) event.getDamager();
+						new BossHealth().getBar0().addPlayer(player);
+					}
+				}
+			} else if (mob.getCustomName().substring(2).equalsIgnoreCase("고블린" + ChatColor.YELLOW + " [Lv.47]")) {
 
 				if(event.getDamager() instanceof Player) {
 					Player player = (Player) event.getDamager();
@@ -1347,19 +1368,26 @@ public class Main extends JavaPlugin implements Listener{
 			}
 			
 			if(event.getEntity() instanceof Giant) {
-				bar.setProgress(((LivingEntity) event.getEntity()).getHealth() / 200000.0);
-				if(((LivingEntity) event.getEntity()).getHealth() <= 0) {
-					for (Player allPlayer : Bukkit.getOnlinePlayers()) {
-						allPlayer.sendMessage("이세계를 위협하던 보스가 소멸하였습니다.");
-						allPlayer.sendMessage("한동안 평화가 지속될 것 입니다.");
-						allPlayer.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, Integer.MAX_VALUE, 0));
-						Location loc = allPlayer.getLocation();
+				
+				LivingEntity boss = (LivingEntity) event.getEntity();
+				
+				if(boss.getHealth() - event.getFinalDamage() <= 0) {
+					for(Player p : new BossHealth().getBar0().getPlayers()) {
+						new BossHealth().getBar0().setProgress(0);
+						new BossHealth().getBar0().removePlayer(p);
+						p.sendMessage("이세계를 위협하던 보스가 소멸하였습니다.");
+						p.sendMessage("한동안 평화가 지속될 것 입니다.");
+						p.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, Integer.MAX_VALUE, 0));
+						Location loc = p.getLocation();
 						if(loc.getX() <= -62 && loc.getY() <= 214 && loc.getZ() <= 21 
 								&& loc.getX() >= -98 && loc.getY() >= 194 && loc.getZ() >= -31) {
-							allPlayer.teleport(new Location(this.world, -146, 66, -167));
+							p.teleport(new Location(this.world, -146, 66, -167));
 						}
 					}
+				} else {
+					new BossHealth().getBar0().setProgress((boss.getHealth()-event.getFinalDamage()) / 200000.0);
 				}
+				
 			}
 		}
 		
@@ -1588,31 +1616,41 @@ public class Main extends JavaPlugin implements Listener{
 							}
 						}
 						if(tmp == 0) {
-							
 							for(Entity ent : list) {
 								if(ent instanceof Giant) {
 									ent.remove();
-									bar.removeAll();
 								}
 							}
 							
-							Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -79, 205, 7), EntityType.GIANT);
+							Giant g = (Giant) Bukkit.getWorld("sao").spawnEntity(new Location(sao, -78.5, 201, 7), EntityType.GIANT);
 							g.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, true, false, false));
-							g.setAI(false);
 							g.setMaxHealth(200000);
 							g.setHealth(200000);
-							
-							bar.setProgress(g.getHealth() / 200000.0);
-							for(Player p : Bukkit.getOnlinePlayers()) {
-								if(p.getWorld() == sao) {
-									bar.addPlayer(p);
-								}
-							}
-							
+						}
+						
+						for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+							new BossHealth().getBar0().setProgress(1.0);
+							new BossHealth().getBar0().addPlayer(allPlayer);
 						}
 					}
 				}
 				
+			}
+		} catch(Exception e) {
+			
+		}
+		
+		try {
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW + "test1")) {
+				for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+					new BossHealth().getBar1().setProgress(1.0);
+					new BossHealth().getBar1().addPlayer(allPlayer);
+				}
+			} else if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW + "test2")) {
+				for (Player allPlayer : Bukkit.getOnlinePlayers()) {
+					new BossHealth().getBar0().setProgress(1.0);
+					new BossHealth().getBar0().addPlayer(allPlayer);
+				}
 			}
 		} catch(Exception e) {
 			
@@ -1659,7 +1697,7 @@ public class Main extends JavaPlugin implements Listener{
 						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "이세계의 고블린이 찾아왔습니다.");
 						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "좌표: " + (int)(loc.getX()) + " " +  + (int)(loc.getY()) + " "  + (int)(loc.getZ()));
 						new BossHealth().getBar1().setProgress(1.0);
-						new BossHealth().getBar1().addPlayer(player);
+						new BossHealth().getBar1().addPlayer(allPlayer);
 					}
 				}
 			} else if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "오크 소환 스크롤 [Lv.60]")) {
@@ -1710,7 +1748,7 @@ public class Main extends JavaPlugin implements Listener{
 						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "이세계의 오크가 찾아왔습니다.");
 						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "좌표: " + (int)(loc.getX()) + " " +  + (int)(loc.getY()) + " "  + (int)(loc.getZ()));
 						new BossHealth().getBar2().setProgress(1.0);
-						new BossHealth().getBar2().addPlayer(player);
+						new BossHealth().getBar2().addPlayer(allPlayer);
 					}
 				}
 			} else if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "외눈의 포보르 소환 스크롤 [Lv.83]")) {
@@ -1759,7 +1797,7 @@ public class Main extends JavaPlugin implements Listener{
 						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "이세계의 외눈의 포보르가 찾아왔습니다.");
 						allPlayer.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "좌표: " + (int)(loc.getX()) + " " +  + (int)(loc.getY()) + " "  + (int)(loc.getZ()));
 						new BossHealth().getBar3().setProgress(1.0);
-						new BossHealth().getBar3().addPlayer(player);
+						new BossHealth().getBar3().addPlayer(allPlayer);
 					}
 				}
 			}
