@@ -119,7 +119,9 @@ public class PlayerHitDebuff {
 				player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 9, true, false, false));
 				player.damage(50);
 			} else if(num == 1) {
-				player.setVelocity(new Vector(0, 3, 0));
+				if(!player.isSneaking()) {
+					player.setVelocity(new Vector(0, 3, 0));
+				}
 				player.damage(100);
 			}
 		}

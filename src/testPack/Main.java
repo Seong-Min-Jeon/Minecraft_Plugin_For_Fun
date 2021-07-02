@@ -1505,6 +1505,7 @@ public class Main extends JavaPlugin implements Listener{
 				} else if(ent.getCustomName().equals(ChatColor.BOLD + "고오옴")) {
 					event.setDroppedExp(300);
 					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.NETHER_STAR, rnd.nextInt(2)));
+					Bukkit.getWorld("sao").dropItem(loc, new ItemStack(Material.EMERALD, rnd.nextInt(10)));
 				}
 			}
 			if(ent.getCustomName().equals(ChatColor.BOLD + "고블린" + ChatColor.YELLOW + " [Lv.47]")) {
