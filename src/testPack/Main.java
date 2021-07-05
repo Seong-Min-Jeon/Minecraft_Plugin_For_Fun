@@ -27,6 +27,7 @@ import org.bukkit.entity.ElderGuardian;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.EvokerFangs;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Giant;
 import org.bukkit.entity.Guardian;
@@ -1048,6 +1049,16 @@ public class Main extends JavaPlugin implements Listener{
 							return;
 						}
 					}
+				} else if(event.getDamager() instanceof EvokerFangs) {
+					if(event.getEntity() instanceof Player) {
+						Player player = (Player) event.getEntity();
+						if(player.getHealth() <= 2) {
+							player.setHealth(0);
+						} else {
+							player.setHealth(player.getHealth() - 2);
+						}
+						return;
+					}
 				} else if(event.getDamager() instanceof SmallFireball){
 					SmallFireball ball = (SmallFireball) event.getDamager();
 					if(ball.getShooter() instanceof Blaze) {
@@ -1637,6 +1648,175 @@ public class Main extends JavaPlugin implements Listener{
 				}
 				
 			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW + "저항의 탐욕 (Lv.100)")) {
+				if(player.getLevel() > 100) {
+					player.setLevel(player.getLevel() - 50);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0));
+					player.sendMessage("저항1 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW + "신속의 탐욕 (Lv.100)")) {
+				if(player.getLevel() > 100) {
+					player.setLevel(player.getLevel() - 30);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+					player.sendMessage("신속2 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW + "강화의 탐욕 (Lv.100)")) {
+				if(player.getLevel() > 100) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.NETHERITE_SCRAP, 4));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.YELLOW + "금전의 탐욕 (Lv.100)")) {
+				if(player.getLevel() > 100) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.EMERALD, 20));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "저항의 탐욕 (Lv.200)")) {
+				if(player.getLevel() > 200) {
+					player.setLevel(player.getLevel() - 50);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
+					player.sendMessage("저항2 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "신속의 탐욕 (Lv.200)")) {
+				if(player.getLevel() > 200) {
+					player.setLevel(player.getLevel() - 30);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
+					player.sendMessage("신속3 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "강화의 탐욕 (Lv.200)")) {
+				if(player.getLevel() > 200) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.NETHERITE_SCRAP, 20));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "금전의 탐욕 (Lv.200)")) {
+				if(player.getLevel() > 200) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.EMERALD, 60));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "저항의 탐욕 (Lv.300)")) {
+				if(player.getLevel() > 300) {
+					player.setLevel(player.getLevel() - 50);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 2));
+					player.sendMessage("저항3 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "신속의 탐욕 (Lv.300)")) {
+				if(player.getLevel() > 300) {
+					player.setLevel(player.getLevel() - 30);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 3));
+					player.sendMessage("신속4 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "강화의 탐욕 (Lv.300)")) {
+				if(player.getLevel() > 300) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.NETHERITE_INGOT, 10));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "금전의 탐욕 (Lv.300)")) {
+				if(player.getLevel() > 300) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.EMERALD_BLOCK, 10));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "저항의 탐욕 (Lv.500)")) {
+				if(player.getLevel() > 500) {
+					player.setLevel(player.getLevel() - 50);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 3));
+					player.sendMessage("저항4 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "신속의 탐욕 (Lv.500)")) {
+				if(player.getLevel() > 500) {
+					player.setLevel(player.getLevel() - 30);
+					itemArg.remove();
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 4));
+					player.sendMessage("신속5 버프가 죽기 전까지 부여됩니다.");
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "강화의 탐욕 (Lv.500)")) {
+				if(player.getLevel() > 500) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.NETHERITE_INGOT, 30));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
+			if (itemArg.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "금전의 탐욕 (Lv.500)")) {
+				if(player.getLevel() > 500) {
+					player.setLevel(player.getLevel() - 10);
+					itemArg.remove();
+					player.getInventory().addItem(new ItemStack(Material.EMERALD_BLOCK, 30));
+				} else { 
+					player.sendMessage(ChatColor.RED + "레벨이 부족합니다.");
+				}
+			}
+			
 		} catch(Exception e) {
 			
 		}
